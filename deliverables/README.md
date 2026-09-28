@@ -1,6 +1,6 @@
 # Reviewed SIH presentation
 
-[SakshiAstra_reviewed.pptx](SakshiAstra_reviewed.pptx) edits the supplied six-slide SIH deck. It preserves the current Tech Stack wording/categories, template, original fonts and colors, and slides 1–2. There is one `6@RootRevival` label on each slide.
+[SakshiAstra_reviewed.pptx](SakshiAstra_reviewed.pptx) edits the supplied six-slide SIH deck. It uses the official template palette: SIH blue headings, light-blue panels, the matching SIH footer/link blue, and the template accent colors. It preserves the current Tech Stack wording/categories, SIH layout, original fonts and logos, and slides 1–2 content. There is one `6@RootRevival` label on each slide.
 
 The deck distinguishes the React fixture prototype, the separately published research benchmark, and Python-backend integration under development. It includes an actual Scene 5 screenshot, the corrected two benchmark statistics and scope caveat, accurate takeover verdicts, replay wording, and the Agora listing-text citation. Original technology logo sources are recorded in Slide 3's speaker notes; technologies without an established original mark retain text labels rather than generic substitute icons.
 
