@@ -1,0 +1,733 @@
+{
+  "timestamp": "2026-09-27 13:41:18",
+  "generator_seed": 20260927,
+  "test_split_sha256": "450c68c19ed7243bd861c1c64b3328c3d3e98b7a92e02e1a818683cede7438e8",
+  "thresholds_sha256": "078b46e86b52a0a43ca2349bf51f34a090acbba2c8a6be23ea75901f709f1928",
+  "git_commit": "50907573db4c4c2fd860f66719488436a3b00985",
+  "locked_thresholds": {
+    "B0: Naive Key Match": {
+      "40%": {
+        "target_coverage": 0.4,
+        "threshold": 1.0,
+        "validation_realized_coverage": 1.0
+      },
+      "50%": {
+        "target_coverage": 0.5,
+        "threshold": 1.0,
+        "validation_realized_coverage": 1.0
+      },
+      "60%": {
+        "target_coverage": 0.6,
+        "threshold": 1.0,
+        "validation_realized_coverage": 1.0
+      },
+      "64%": {
+        "target_coverage": 0.64,
+        "threshold": 1.0,
+        "validation_realized_coverage": 1.0
+      },
+      "70%": {
+        "target_coverage": 0.7,
+        "threshold": 1.0,
+        "validation_realized_coverage": 1.0
+      },
+      "80%": {
+        "target_coverage": 0.8,
+        "threshold": 1.0,
+        "validation_realized_coverage": 1.0
+      }
+    },
+    "B5: Transformer Text Baseline": {
+      "40%": {
+        "target_coverage": 0.4,
+        "threshold": 0.9898899203604508,
+        "validation_realized_coverage": 0.4
+      },
+      "50%": {
+        "target_coverage": 0.5,
+        "threshold": 0.9820463082735171,
+        "validation_realized_coverage": 0.5
+      },
+      "60%": {
+        "target_coverage": 0.6,
+        "threshold": 0.981515051036176,
+        "validation_realized_coverage": 0.6
+      },
+      "64%": {
+        "target_coverage": 0.64,
+        "threshold": 0.9810637842974791,
+        "validation_realized_coverage": 0.64
+      },
+      "70%": {
+        "target_coverage": 0.7,
+        "threshold": 0.9639856219291687,
+        "validation_realized_coverage": 0.7
+      },
+      "80%": {
+        "target_coverage": 0.8,
+        "threshold": 0.9632755517959595,
+        "validation_realized_coverage": 0.8
+      }
+    },
+    "B4: Gradient Boosting Alone": {
+      "40%": {
+        "target_coverage": 0.4,
+        "threshold": 0.9999766903347487,
+        "validation_realized_coverage": 0.42
+      },
+      "50%": {
+        "target_coverage": 0.5,
+        "threshold": 0.9999766878275834,
+        "validation_realized_coverage": 0.5
+      },
+      "60%": {
+        "target_coverage": 0.6,
+        "threshold": 0.9999755805404684,
+        "validation_realized_coverage": 0.6
+      },
+      "64%": {
+        "target_coverage": 0.64,
+        "threshold": 0.9999747514716995,
+        "validation_realized_coverage": 0.68
+      },
+      "70%": {
+        "target_coverage": 0.7,
+        "threshold": 0.9999682374569603,
+        "validation_realized_coverage": 0.7
+      },
+      "80%": {
+        "target_coverage": 0.8,
+        "threshold": 0.999964440371237,
+        "validation_realized_coverage": 0.8
+      }
+    },
+    "B8: GradBoost + Grade Feature": {
+      "40%": {
+        "target_coverage": 0.4,
+        "threshold": 0.9999766895590363,
+        "validation_realized_coverage": 0.42
+      },
+      "50%": {
+        "target_coverage": 0.5,
+        "threshold": 0.9999766870494655,
+        "validation_realized_coverage": 0.5
+      },
+      "60%": {
+        "target_coverage": 0.6,
+        "threshold": 0.9999755805555035,
+        "validation_realized_coverage": 0.6
+      },
+      "64%": {
+        "target_coverage": 0.64,
+        "threshold": 0.9999747514515763,
+        "validation_realized_coverage": 0.68
+      },
+      "70%": {
+        "target_coverage": 0.7,
+        "threshold": 0.999968236891596,
+        "validation_realized_coverage": 0.7
+      },
+      "80%": {
+        "target_coverage": 0.8,
+        "threshold": 0.999964440248756,
+        "validation_realized_coverage": 0.8
+      }
+    },
+    "PRAMAAN: Claim-Specific Verification Gate": {
+      "40%": {
+        "target_coverage": 0.4,
+        "threshold": 0.95,
+        "validation_realized_coverage": 0.66
+      },
+      "50%": {
+        "target_coverage": 0.5,
+        "threshold": 0.95,
+        "validation_realized_coverage": 0.66
+      },
+      "60%": {
+        "target_coverage": 0.6,
+        "threshold": 0.95,
+        "validation_realized_coverage": 0.66
+      },
+      "64%": {
+        "target_coverage": 0.64,
+        "threshold": 0.95,
+        "validation_realized_coverage": 0.66
+      },
+      "70%": {
+        "target_coverage": 0.7,
+        "threshold": 0.45,
+        "validation_realized_coverage": 1.0
+      },
+      "80%": {
+        "target_coverage": 0.8,
+        "threshold": 0.45,
+        "validation_realized_coverage": 1.0
+      }
+    }
+  },
+  "test_evaluation": [
+    {
+      "Target Cov (Val)": "40%",
+      "Locked Thresh": "1.0000",
+      "System": "B0: Naive Key Match",
+      "Test TP": 100,
+      "Realized Recall (Test)": "100.0%",
+      "Test FP": 180,
+      "FPR (FP/N_neg)": "85.7%",
+      "Precision": "35.7%",
+      "FDR (1-Prec)": "64.3%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "30/30",
+      "Account Sale (F6)": "30/30"
+    },
+    {
+      "Target Cov (Val)": "40%",
+      "Locked Thresh": "0.9899",
+      "System": "B5: Transformer Text Baseline",
+      "Test TP": 53,
+      "Realized Recall (Test)": "53.0%",
+      "Test FP": 90,
+      "FPR (FP/N_neg)": "42.9%",
+      "Precision": "37.1%",
+      "FDR (1-Prec)": "62.9%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "40%",
+      "Locked Thresh": "1.0000",
+      "System": "B4: Gradient Boosting Alone",
+      "Test TP": 35,
+      "Realized Recall (Test)": "35.0%",
+      "Test FP": 0,
+      "FPR (FP/N_neg)": "0.0%",
+      "Precision": "100.0%",
+      "FDR (1-Prec)": "0.0%",
+      "Exact Squats (F3B)": "0/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "40%",
+      "Locked Thresh": "1.0000",
+      "System": "B8: GradBoost + Grade Feature",
+      "Test TP": 35,
+      "Realized Recall (Test)": "35.0%",
+      "Test FP": 0,
+      "FPR (FP/N_neg)": "0.0%",
+      "Precision": "100.0%",
+      "FDR (1-Prec)": "0.0%",
+      "Exact Squats (F3B)": "0/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "40%",
+      "Locked Thresh": "0.9500",
+      "System": "PRAMAAN: Claim-Specific Verification Gate",
+      "Test TP": 67,
+      "Realized Recall (Test)": "67.0%",
+      "Test FP": 0,
+      "FPR (FP/N_neg)": "0.0%",
+      "Precision": "100.0%",
+      "FDR (1-Prec)": "0.0%",
+      "Exact Squats (F3B)": "0/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "50%",
+      "Locked Thresh": "1.0000",
+      "System": "B0: Naive Key Match",
+      "Test TP": 100,
+      "Realized Recall (Test)": "100.0%",
+      "Test FP": 180,
+      "FPR (FP/N_neg)": "85.7%",
+      "Precision": "35.7%",
+      "FDR (1-Prec)": "64.3%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "30/30",
+      "Account Sale (F6)": "30/30"
+    },
+    {
+      "Target Cov (Val)": "50%",
+      "Locked Thresh": "0.9820",
+      "System": "B5: Transformer Text Baseline",
+      "Test TP": 65,
+      "Realized Recall (Test)": "65.0%",
+      "Test FP": 90,
+      "FPR (FP/N_neg)": "42.9%",
+      "Precision": "41.9%",
+      "FDR (1-Prec)": "58.1%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "50%",
+      "Locked Thresh": "1.0000",
+      "System": "B4: Gradient Boosting Alone",
+      "Test TP": 47,
+      "Realized Recall (Test)": "47.0%",
+      "Test FP": 30,
+      "FPR (FP/N_neg)": "14.3%",
+      "Precision": "61.0%",
+      "FDR (1-Prec)": "39.0%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "50%",
+      "Locked Thresh": "1.0000",
+      "System": "B8: GradBoost + Grade Feature",
+      "Test TP": 47,
+      "Realized Recall (Test)": "47.0%",
+      "Test FP": 30,
+      "FPR (FP/N_neg)": "14.3%",
+      "Precision": "61.0%",
+      "FDR (1-Prec)": "39.0%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "50%",
+      "Locked Thresh": "0.9500",
+      "System": "PRAMAAN: Claim-Specific Verification Gate",
+      "Test TP": 67,
+      "Realized Recall (Test)": "67.0%",
+      "Test FP": 0,
+      "FPR (FP/N_neg)": "0.0%",
+      "Precision": "100.0%",
+      "FDR (1-Prec)": "0.0%",
+      "Exact Squats (F3B)": "0/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "60%",
+      "Locked Thresh": "1.0000",
+      "System": "B0: Naive Key Match",
+      "Test TP": 100,
+      "Realized Recall (Test)": "100.0%",
+      "Test FP": 180,
+      "FPR (FP/N_neg)": "85.7%",
+      "Precision": "35.7%",
+      "FDR (1-Prec)": "64.3%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "30/30",
+      "Account Sale (F6)": "30/30"
+    },
+    {
+      "Target Cov (Val)": "60%",
+      "Locked Thresh": "0.9815",
+      "System": "B5: Transformer Text Baseline",
+      "Test TP": 74,
+      "Realized Recall (Test)": "74.0%",
+      "Test FP": 90,
+      "FPR (FP/N_neg)": "42.9%",
+      "Precision": "45.1%",
+      "FDR (1-Prec)": "54.9%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "60%",
+      "Locked Thresh": "1.0000",
+      "System": "B4: Gradient Boosting Alone",
+      "Test TP": 59,
+      "Realized Recall (Test)": "59.0%",
+      "Test FP": 30,
+      "FPR (FP/N_neg)": "14.3%",
+      "Precision": "66.3%",
+      "FDR (1-Prec)": "33.7%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "60%",
+      "Locked Thresh": "1.0000",
+      "System": "B8: GradBoost + Grade Feature",
+      "Test TP": 59,
+      "Realized Recall (Test)": "59.0%",
+      "Test FP": 30,
+      "FPR (FP/N_neg)": "14.3%",
+      "Precision": "66.3%",
+      "FDR (1-Prec)": "33.7%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "60%",
+      "Locked Thresh": "0.9500",
+      "System": "PRAMAAN: Claim-Specific Verification Gate",
+      "Test TP": 67,
+      "Realized Recall (Test)": "67.0%",
+      "Test FP": 0,
+      "FPR (FP/N_neg)": "0.0%",
+      "Precision": "100.0%",
+      "FDR (1-Prec)": "0.0%",
+      "Exact Squats (F3B)": "0/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "64%",
+      "Locked Thresh": "1.0000",
+      "System": "B0: Naive Key Match",
+      "Test TP": 100,
+      "Realized Recall (Test)": "100.0%",
+      "Test FP": 180,
+      "FPR (FP/N_neg)": "85.7%",
+      "Precision": "35.7%",
+      "FDR (1-Prec)": "64.3%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "30/30",
+      "Account Sale (F6)": "30/30"
+    },
+    {
+      "Target Cov (Val)": "64%",
+      "Locked Thresh": "0.9811",
+      "System": "B5: Transformer Text Baseline",
+      "Test TP": 74,
+      "Realized Recall (Test)": "74.0%",
+      "Test FP": 90,
+      "FPR (FP/N_neg)": "42.9%",
+      "Precision": "45.1%",
+      "FDR (1-Prec)": "54.9%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "64%",
+      "Locked Thresh": "1.0000",
+      "System": "B4: Gradient Boosting Alone",
+      "Test TP": 66,
+      "Realized Recall (Test)": "66.0%",
+      "Test FP": 30,
+      "FPR (FP/N_neg)": "14.3%",
+      "Precision": "68.8%",
+      "FDR (1-Prec)": "31.2%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "64%",
+      "Locked Thresh": "1.0000",
+      "System": "B8: GradBoost + Grade Feature",
+      "Test TP": 66,
+      "Realized Recall (Test)": "66.0%",
+      "Test FP": 30,
+      "FPR (FP/N_neg)": "14.3%",
+      "Precision": "68.8%",
+      "FDR (1-Prec)": "31.2%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "64%",
+      "Locked Thresh": "0.9500",
+      "System": "PRAMAAN: Claim-Specific Verification Gate",
+      "Test TP": 67,
+      "Realized Recall (Test)": "67.0%",
+      "Test FP": 0,
+      "FPR (FP/N_neg)": "0.0%",
+      "Precision": "100.0%",
+      "FDR (1-Prec)": "0.0%",
+      "Exact Squats (F3B)": "0/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "70%",
+      "Locked Thresh": "1.0000",
+      "System": "B0: Naive Key Match",
+      "Test TP": 100,
+      "Realized Recall (Test)": "100.0%",
+      "Test FP": 180,
+      "FPR (FP/N_neg)": "85.7%",
+      "Precision": "35.7%",
+      "FDR (1-Prec)": "64.3%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "30/30",
+      "Account Sale (F6)": "30/30"
+    },
+    {
+      "Target Cov (Val)": "70%",
+      "Locked Thresh": "0.9640",
+      "System": "B5: Transformer Text Baseline",
+      "Test TP": 80,
+      "Realized Recall (Test)": "80.0%",
+      "Test FP": 120,
+      "FPR (FP/N_neg)": "57.1%",
+      "Precision": "40.0%",
+      "FDR (1-Prec)": "60.0%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "30/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "70%",
+      "Locked Thresh": "1.0000",
+      "System": "B4: Gradient Boosting Alone",
+      "Test TP": 67,
+      "Realized Recall (Test)": "67.0%",
+      "Test FP": 30,
+      "FPR (FP/N_neg)": "14.3%",
+      "Precision": "69.1%",
+      "FDR (1-Prec)": "30.9%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "70%",
+      "Locked Thresh": "1.0000",
+      "System": "B8: GradBoost + Grade Feature",
+      "Test TP": 67,
+      "Realized Recall (Test)": "67.0%",
+      "Test FP": 30,
+      "FPR (FP/N_neg)": "14.3%",
+      "Precision": "69.1%",
+      "FDR (1-Prec)": "30.9%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "70%",
+      "Locked Thresh": "0.4500",
+      "System": "PRAMAAN: Claim-Specific Verification Gate",
+      "Test TP": 100,
+      "Realized Recall (Test)": "100.0%",
+      "Test FP": 60,
+      "FPR (FP/N_neg)": "28.6%",
+      "Precision": "62.5%",
+      "FDR (1-Prec)": "37.5%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "80%",
+      "Locked Thresh": "1.0000",
+      "System": "B0: Naive Key Match",
+      "Test TP": 100,
+      "Realized Recall (Test)": "100.0%",
+      "Test FP": 180,
+      "FPR (FP/N_neg)": "85.7%",
+      "Precision": "35.7%",
+      "FDR (1-Prec)": "64.3%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "30/30",
+      "Account Sale (F6)": "30/30"
+    },
+    {
+      "Target Cov (Val)": "80%",
+      "Locked Thresh": "0.9633",
+      "System": "B5: Transformer Text Baseline",
+      "Test TP": 85,
+      "Realized Recall (Test)": "85.0%",
+      "Test FP": 120,
+      "FPR (FP/N_neg)": "57.1%",
+      "Precision": "41.5%",
+      "FDR (1-Prec)": "58.5%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "30/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "80%",
+      "Locked Thresh": "1.0000",
+      "System": "B4: Gradient Boosting Alone",
+      "Test TP": 86,
+      "Realized Recall (Test)": "86.0%",
+      "Test FP": 90,
+      "FPR (FP/N_neg)": "42.9%",
+      "Precision": "48.9%",
+      "FDR (1-Prec)": "51.1%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "80%",
+      "Locked Thresh": "1.0000",
+      "System": "B8: GradBoost + Grade Feature",
+      "Test TP": 86,
+      "Realized Recall (Test)": "86.0%",
+      "Test FP": 90,
+      "FPR (FP/N_neg)": "42.9%",
+      "Precision": "48.9%",
+      "FDR (1-Prec)": "51.1%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "30/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    },
+    {
+      "Target Cov (Val)": "80%",
+      "Locked Thresh": "0.4500",
+      "System": "PRAMAAN: Claim-Specific Verification Gate",
+      "Test TP": 100,
+      "Realized Recall (Test)": "100.0%",
+      "Test FP": 60,
+      "FPR (FP/N_neg)": "28.6%",
+      "Precision": "62.5%",
+      "FDR (1-Prec)": "37.5%",
+      "Exact Squats (F3B)": "30/30",
+      "Templates (F4)": "0/30",
+      "Replays (F2)": "0/30",
+      "Key Theft (F5)": "0/30",
+      "Account Sale (F6)": "0/30"
+    }
+  ],
+  "table_4f_continuity_stress": [
+    {
+      "cohort": "BENIGN_LARGE",
+      "Mean_Style": 0.4675123723872913,
+      "Mean_TimeOverlap": 0.5,
+      "Mean_ContinuityScore": 0.4805074234323748,
+      "Flagged_Takeover_Rate": 1.0
+    },
+    {
+      "cohort": "BENIGN_MEDIUM",
+      "Mean_Style": 1.0000000000000002,
+      "Mean_TimeOverlap": 0.75,
+      "Mean_ContinuityScore": 0.9000000000000001,
+      "Flagged_Takeover_Rate": 0.0
+    },
+    {
+      "cohort": "BENIGN_SMALL",
+      "Mean_Style": 1.0000000000000002,
+      "Mean_TimeOverlap": 0.9166666666666666,
+      "Mean_ContinuityScore": 0.9666666666666668,
+      "Flagged_Takeover_Rate": 0.0
+    },
+    {
+      "cohort": "MALICIOUS_LARGE",
+      "Mean_Style": 0.10252874311946678,
+      "Mean_TimeOverlap": 0.16666666666666663,
+      "Mean_ContinuityScore": 0.1281839125383467,
+      "Flagged_Takeover_Rate": 1.0
+    },
+    {
+      "cohort": "MALICIOUS_MEDIUM",
+      "Mean_Style": 0.10252874311946678,
+      "Mean_TimeOverlap": 0.5833333333333333,
+      "Mean_ContinuityScore": 0.29485057920501334,
+      "Flagged_Takeover_Rate": 1.0
+    },
+    {
+      "cohort": "MALICIOUS_SUBTLE",
+      "Mean_Style": 0.9686156233755777,
+      "Mean_TimeOverlap": 0.8333333333333334,
+      "Mean_ContinuityScore": 0.91450270735868,
+      "Flagged_Takeover_Rate": 0.0
+    }
+  ],
+  "table_4f_auc": 0.7777777777777779,
+  "table_4g_noise": [
+    {
+      "Verifier Error Rate (eta)": "0%",
+      "Mean FPR": "0.00%",
+      "FPR 95% CI": "[0.00%, 0.00%]",
+      "Mean Precision": "100.00%",
+      "Precision 95% CI": "[100.00%, 100.00%]"
+    },
+    {
+      "Verifier Error Rate (eta)": "10%",
+      "Mean FPR": "4.10%",
+      "FPR 95% CI": "[2.38%, 6.19%]",
+      "Mean Precision": "89.14%",
+      "Precision 95% CI": "[83.84%, 93.33%]"
+    },
+    {
+      "Verifier Error Rate (eta)": "20%",
+      "Mean FPR": "8.08%",
+      "FPR 95% CI": "[5.71%, 10.95%]",
+      "Mean Precision": "81.32%",
+      "Precision 95% CI": "[75.97%, 86.17%]"
+    },
+    {
+      "Verifier Error Rate (eta)": "30%",
+      "Mean FPR": "12.67%",
+      "FPR 95% CI": "[9.63%, 16.08%]",
+      "Mean Precision": "74.32%",
+      "Precision 95% CI": "[69.17%, 79.12%]"
+    },
+    {
+      "Verifier Error Rate (eta)": "40%",
+      "Mean FPR": "16.92%",
+      "FPR 95% CI": "[13.44%, 21.95%]",
+      "Mean Precision": "69.42%",
+      "Precision 95% CI": "[63.80%, 74.57%]"
+    }
+  ]
+}

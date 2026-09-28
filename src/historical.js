@@ -43,7 +43,7 @@ export function attachHistoricalText(scenes, fixtureSource) {
   };
   scene.claims.persona_link.historicalLens = lens;
   const evidence = scene.claims.persona_link.evidence.find(e => e.kind === 'Description text');
-  evidence.title = `Listing description, ${lens.raw}% character similarity`;
+  evidence.title = `Listing description, ${lens.raw}% raw → ${lens.independent}% after template removal`;
   evidence.sources = lens.sources;
   evidence.source = fixtureSource;
   evidence.historical_text = lens.historical_text;

@@ -192,7 +192,7 @@ function ClaimEvidence({ claim, onCollect, collected, busy, redacted, onReveal, 
       {claim.historicalLens ? <BoilerplateLens raw={claim.historicalLens.raw} independent={claim.historicalLens.independent}
         text={claim.historicalLens.texts[0]} comparisonText={claim.historicalLens.texts[1]} labels={claim.historicalLens.fixture_context.personas}
         boiler={[claim.historicalLens.template]} indep={[claim.historicalLens.residuals[0]]}
-        sources={claim.historicalLens.sources} /> : claim.evidence.some(e => e.origin === 'tpl-pack-v4') && <BoilerplateLens raw={96} independent={12} text={SAMPLE_LISTING}
+        sources={claim.historicalLens.sources} /> : claim.evidence.some(e => e.origin === 'tpl-pack-v4') && <BoilerplateLens raw={88} independent={24} text={SAMPLE_LISTING}
         boiler={['Escrow accepted', 'FE available', '24h dispatch', 'Worldwide shipping, discrete packaging is standard, no exceptions']}
         indep={['pale horse supply', 'five years in the trade']} />}
       <div>{claim.evidence.map((ev,i) => <EvidenceRow key={i} ev={ev} expanded={open === i}

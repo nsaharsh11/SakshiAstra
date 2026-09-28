@@ -40,3 +40,5 @@
 *.woff2 filter=lfs diff=lfs merge=lfs -text
 *.xz filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
+# Preserve the imported research artifacts byte-for-byte for their SHA-256 manifest.
+benchmark/experiment_4/* -text

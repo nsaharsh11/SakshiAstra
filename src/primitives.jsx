@@ -240,7 +240,7 @@ function CopyOriginBundle({ bundle, defaultOpen }) {
 }
 
 /* ---------- boilerplate lens ---------- */
-function BoilerplateLens({ raw = 96, independent = 12, text, comparisonText, labels = [], boiler = [], indep = [], sources }) {
+function BoilerplateLens({ raw = 88, independent = 24, text, comparisonText, labels = [], boiler = [], indep = [], sources }) {
   const [mode, setMode] = React.useState('raw');
   const [expanded, setExpanded] = React.useState(false);
   const segs = buildSegments(text, boiler, indep);

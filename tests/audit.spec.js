@@ -212,7 +212,7 @@ test('copied identity bundle counts once and cannot assert', async ({ page }) =>
   expect(result.c.claimVerdict).toBe('HOLD');
   expect(result.c.bundles).toHaveLength(1);
   expect(result.c.bundles[0]).toMatchObject({ cost: 0, countsOnce: true });
-  expect(result.c.bundles[0].title).toContain('counts once');
+  expect(result.c.bundles[0].title).toBe('6 observations · 4 signals · 1 origin — counted once');
   expect(result.copies.every(e => e.cost === 0)).toBe(true);
   expect(result.inflated.verdict).toBe('HOLD');
   expect(result.inflated.peak).toBe('L0');
@@ -418,4 +418,34 @@ test('case reset refreshes evidence and collection controls while preserving ano
   const queue = await page.evaluate(async () => api.getQueue());
   expect(queue.find(q => q.scene === 'ladder').holdClaims).not.toContain('Wallet Control');
   expect(queue.find(q => q.scene === 'resolve').holdClaims).not.toContain('Persona Link');
+});
+
+
+test('takeover remains an outlined amber badge; fixture statuses match the evaluator and screen', async ({ page }) => {
+  await enter(page);
+  for (const id of scenes) {
+    const claims = await page.evaluate(async id => {
+      const fixture = SCENES.find(s => s.id === id), scene = await api.getCase(id);
+      return Object.entries(fixture.claims).map(([claimId, claim]) => ({ fixture: claim.status, evaluated: evaluateClaim(claim).status, rendered: scene.claims[claimId].status }));
+    }, id);
+    for (const claim of claims) { expect(claim.fixture).toBe(claim.evaluated); expect(claim.rendered).toBe(claim.evaluated); }
+  }
+  await pickScene(page, 0);
+  await nav(page, 'Evidence inspector');
+  await expect(page.locator('.main .sheet-head')).toContainText('UNVERIFIED');
+  await pickScene(page, 2);
+  await expect(page.locator('.main .sheet-head')).toContainText('QUESTIONABLE');
+  await expect(page.locator('.main .sheet-head .vchip')).toContainText('HOLD');
+  await pickScene(page, 4);
+  await nav(page, 'Actor profile');
+  const badge = page.locator('.v-takeover').first();
+  await expect(badge).toBeVisible();
+  const style = await badge.evaluate(el => {
+    const css = getComputedStyle(el);
+    const surface = getComputedStyle(el.closest('.sheet')).backgroundColor;
+    const amber = getComputedStyle(document.querySelector('.main .v-hold')).color;
+    return { colour: css.color, background: css.backgroundColor, border: css.borderTopColor, width: parseFloat(css.borderTopWidth), surface, amber };
+  });
+  expect(style.colour).toBe(style.amber); expect(style.border).toBe(style.amber);
+  expect(style.width).toBeGreaterThan(0); expect(style.background).toBe(style.surface);
 });

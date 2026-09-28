@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { assertSceneConsistency } from './consistency.mjs';
 
 // The fixture/API modules expose their browser diagnostics on window.
 // Supply that surface for this deterministic Node check; no DOM is needed.
 globalThis.window = globalThis;
 const { api, evaluateClaim, replayEvidence, caseResult, weakestRoute } = await import('../src/api.js');
-const { SCENES, RULES, PROOF_LEVELS } = await import('../src/scenes.js');
+const { SCENES, CLAIM_TYPES, RULES, PROOF_LEVELS } = await import('../src/scenes.js');
 const { BOARD_COPY } = await import('../src/copy.js');
 const { PRESENTER } = await import('../src/presenter.js');
 const { CLASSIFIER_LABELS, DATASET, HISTORICAL_DATA, textSimilarity, validateHistoricalData } = await import('../src/historical.js');
@@ -30,6 +33,105 @@ async function check(name, run) {
   checks++;
   console.log(`PASS ${name}`);
 }
+
+await check('fixture consistency: status equals evaluator; ledger verdicts, missing effects, peaks, counts and dates agree', async () => {
+  assertSceneConsistency(SCENES, evaluateClaim, CLAIM_TYPES, PRESENTER);
+  const mutations = [
+    scenes => { scenes[0].claims.persona_link.status = 'QUESTIONABLE'; },
+    scenes => { scenes[0].ledger.find(r => r.act.includes('Persona Link =')).act = 'Verdict set: Persona Link = ASSERT'; },
+    scenes => { scenes[0].claims.persona_link.missing[0].effect = 'REJECT → ASSERT'; },
+    scenes => { scenes[0].claims.persona_link.peak = 'L3'; },
+    scenes => { scenes[0].claims.persona_link.bundles[0].note = '9 signals, 1 origin'; },
+    scenes => { scenes[2].claims.key_control.evidence[0].note = 'replayed — first seen 2016-01-06 on Market C'; },
+    scenes => { scenes[2].claims.key_control.evidence[1].title = 'Block from 11 weeks earlier'; },
+  ];
+  for (const mutate of mutations) {
+    const scenes = structuredClone(SCENES); mutate(scenes);
+    assert.throws(() => assertSceneConsistency(scenes, evaluateClaim, CLAIM_TYPES, PRESENTER));
+  }
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.equal(pkg.scripts.prebuild, 'node scripts/check_consistency.mjs');
+  const rejected = spawnSync(process.execPath, ['--input-type=module', '-e', `
+    globalThis.window = globalThis;
+    const { SCENES } = await import('./src/scenes.js');
+    SCENES[0].claims.persona_link.status = 'QUESTIONABLE';
+    await import('./scripts/check_consistency.mjs');
+  `], { encoding: 'utf8' });
+  assert.equal(rejected.status, 1);
+  assert.match(rejected.stderr, /fixture status differs from evaluator/);
+});
+
+await check('replay data: QUESTIONABLE HOLD; all observations questionable; five-week dates and HOLD → ASSERT gaps', async () => {
+  const fixture = SCENES.find(s => s.id === 'replay'), claim = fixture.claims.key_control;
+  assert.equal(claim.status, 'QUESTIONABLE'); assert.equal(evaluateClaim(claim).verdict, 'HOLD');
+  assert.ok(claim.evidence.every(e => e.status === 'questionable'));
+  assert.ok(claim.missing.every(gap => gap.effect === 'HOLD → ASSERT'));
+  assert.ok(fixture.ledger.some(row => row.act === 'Verdict set: Key Control = HOLD (replay, zero weight)'));
+  assert.ok(fixture.caption.includes('5 weeks earlier'));
+  assert.ok(fixture.ledger.some(row => row.act.includes('5 weeks earlier')));
+  assert.ok(claim.evidence.filter(e => ['Byte comparison', 'Timestamp'].includes(e.kind)).every(e => e.title.includes('5 weeks earlier')));
+  const source = readFileSync(new URL('../src/scenes.js', import.meta.url), 'utf8');
+  assert.ok(source.includes('SCENE 3 — REPLAYED SIGNATURE  →  QUESTIONABLE / HOLD'));
+});
+
+await check('lookalike data: UNVERIFIED L0; one 88% → 24% pair; six observations folded into four signals', async () => {
+  const scene = await api.getCase('lookalike'), claim = scene.claims.persona_link;
+  assert.equal(claim.status, 'UNVERIFIED'); assert.equal(claim.peak, 'L0');
+  assert.equal(SCENES[0].claims.persona_link.status, claim.status);
+  const lens = claim.historicalLens;
+  assert.deepEqual([lens.raw, lens.independent], [88, 24]);
+  const description = claim.evidence.find(e => e.kind === 'Description text');
+  assert.ok(description.title.includes('88% raw → 24% after template removal'));
+  assert.equal(claim.bundles[0].title, '6 observations · 4 signals · 1 origin — counted once');
+  assert.equal(claim.evidence.filter(e => e.origin === claim.bundles[0].id).length, 6);
+  assert.equal(claim.bundles[0].items.length, 4);
+  for (const file of ['scenes.js', 'presenter.js', 'historical.js', 'copy.js', 'primitives.jsx', 'claimcard.jsx']) {
+    const source = readFileSync(new URL('../src/' + file, import.meta.url), 'utf8');
+    assert.ok(!/96%|raw=\{96\}|raw = 96/.test(source));
+  }
+  const primitive = readFileSync(new URL('../src/primitives.jsx', import.meta.url), 'utf8');
+  assert.ok(primitive.includes(`raw = ${lens.raw}, independent = ${lens.independent}`));
+  const card = readFileSync(new URL('../src/claimcard.jsx', import.meta.url), 'utf8');
+  assert.ok(card.includes(`raw={${lens.raw}} independent={${lens.independent}}`));
+});
+
+await check('captions: scene and presenter share exactly the same short caption; no scene-1 comparison', async () => {
+  for (const scene of SCENES) {
+    assert.equal(scene.caption, PRESENTER.find(p => p.scene === scene.id).caption);
+    assert.ok(scene.caption.split(/\s+/).length <= 15);
+  }
+  assert.ok(!SCENES[1].caption.includes('three in scene 1'));
+});
+
+await check('hosting text: service-header descriptor inconsistency; ASSERT supported by certificate + server-status leak', async () => {
+  const scene = SCENES.find(s => s.id === 'hosting'), claim = scene.claims.hosting_link;
+  assert.equal(claim.evidence.find(e => e.kind === 'Descriptor').title, 'Descriptor inconsistency with service headers');
+  assert.ok(!JSON.stringify(scene).includes('Onionoo'));
+  for (const text of [scene.caption, claim.summary, BOARD_COPY.hosting]) {
+    assert.match(text, /certificate \+ server-status leak/i); assert.ok(!text.includes('rare finding alone'));
+  }
+  assert.equal(evaluateClaim(claim).verdict, 'ASSERT');
+});
+
+await check('takeover documentation: outlined amber; no stale colour comments', async () => {
+  for (const file of ['scenes.js', 'tokens.css', 'app.css']) {
+    const source = readFileSync(new URL('../src/' + file, import.meta.url), 'utf8');
+    assert.ok(!/\bviolet\b/i.test(source));
+  }
+  const css = readFileSync(new URL('../src/app.css', import.meta.url), 'utf8');
+  assert.match(css, /\.v-takeover \{[^}]*background: var\(--color-surface\)[^}]*border: 1\.5px solid var\(--color-takeover\)/);
+});
+
+await check('repository hygiene: raw data and keys ignored; README records completed restyle and requirement-to-screen table', async () => {
+  const targets = ['data/raw/Agora.csv', 'keys/private.asc', 'private.pem', 'private.key', 'private.p12', 'private.pfx', 'private.gpg', '.env', '.ssh/id_ed25519'];
+  const ignored = spawnSync('git', ['check-ignore', '--no-index', '--stdin'], { input: targets.join('\n') + '\n', encoding: 'utf8' });
+  assert.equal(ignored.status, 0, ignored.stderr);
+  assert.deepEqual(ignored.stdout.trim().split(/\r?\n/), targets);
+  const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
+  assert.ok(readme.includes('The restyle is complete'));
+  assert.ok(readme.includes('| Requirement | Screen |'));
+  assert.ok(!readme.includes('ready for the later restyle round'));
+});
 
 await check('lookalike: HOLD; one copied bundle, max cost 0', async () => {
   const s = await api.getCase('lookalike');

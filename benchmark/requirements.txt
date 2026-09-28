@@ -1,0 +1,6 @@
+# Original versions were not recorded; these are dependency names, not a locked environment.
+numpy
+pandas
+scikit-learn
+sentence-transformers
+cryptography

@@ -11,7 +11,7 @@
      ASSERT  green   — the evidence supports it
      HOLD    amber   — the evidence does not yet support it
      REJECT  red     — the evidence contradicts it
-     TAKEOVER violet — key valid, operator not confirmed (always HOLD)
+     TAKEOVER outlined amber — key valid, operator not confirmed (always HOLD)
 
    CLAIM STATUS: VERIFIED / SUPPORTED / UNVERIFIED / QUESTIONABLE /
                  CONTRADICTED
@@ -24,6 +24,7 @@
    ===================================================================== */
 
 import { attachHistoricalText } from './historical.js';
+import { PRESENTER } from './presenter.js';
 
 /* The five claims. Fixed vocabulary — the UI never invents a sixth. */
 const CLAIM_TYPES = [
@@ -57,7 +58,7 @@ const SRC = {
 const SCENES = [
   /* ==================================================================
      SCENE 1 — LOOKALIKE VENDOR  →  HOLD
-     The headline: three matching signals, all from one origin.
+     The headline: six copied observations, four signals, one origin.
      ================================================================== */
   {
     id: 'lookalike',
@@ -65,8 +66,7 @@ const SCENES = [
     title: 'Lookalike vendor',
     question: 'Two handles selling the same goods on two markets. Same operator?',
     verdict: 'HOLD',
-    caption:
-      '4 signals, 1 origin — counted once.',
+    caption: PRESENTER.find(p => p.scene === 'lookalike').caption,
     case: { id: 'SA-26151-0001', opened: '2026-09-24 11:02', analyst: 'analyst.a' },
     subjects: [
       { handle: 'merrow_supply', market: 'Market A', first: '2015-02-08', last: '2015-04-19' },
@@ -74,16 +74,16 @@ const SCENES = [
     ],
     claims: {
       persona_link: {
-        status: 'SUPPORTED',
+        status: 'UNVERIFIED',
         takeover: false,
-        peak: 'L1',
+        peak: 'L0',
         summary:
           'The two handles share a description template, a product line and a posting cadence. Sharing a template is not sharing an operator: the template is a resale pack that was widely copied, so the match collapses to a single origin.',
         falsify:
           'A signature from either handle that names the other, or a shared secret that only the operator would know.',
         evidence: [
           {
-            kind: 'Description text', title: 'Listing description, 96% character similarity',
+            kind: 'Description text', title: 'Listing description, 88% raw → 24% after template removal',
             detail: 'Both profiles carry the same opening block. Character-level similarity is very high, and this is the signal a similarity engine matches on.',
             status: 'supported', level: 'L0', cost: 0, origin: 'tpl-pack-v4',
             originLabel: 'Resale template pack v4',
@@ -135,8 +135,8 @@ const SCENES = [
         bundles: [
           {
             id: 'tpl-pack-v4',
-            title: 'Copied identity bundle — counts once',
-            note: '4 signals, 1 origin — counted once. Zero proof weight, because none of it is anything but a paste.',
+            title: '6 observations · 4 signals · 1 origin — counted once',
+            note: '6 observations · 4 signals, 1 origin — counted once. Zero proof weight, because none of it is anything but a paste.',
             items: [
               'Handle — merrow_supply / merrow.supply, same token with the separator swapped',
               'PGP key block — pasted, never used to sign anything',
@@ -151,7 +151,7 @@ const SCENES = [
         missing: [
           { text: 'A PGP-signed message from merrow_supply that names the new handle', effect: 'HOLD → ASSERT', tier: 1 },
           { text: 'A wallet-control declaration signed by either handle', effect: 'HOLD → ASSERT', tier: 1 },
-          { text: 'A unique writing fingerprint that survives the template strikethrough', effect: 'strengthens SUPPORTED', tier: 2 },
+          { text: 'A unique writing fingerprint that survives the template strikethrough', effect: 'HOLD → HOLD (strengthens SUPPORTED)', tier: 2 },
         ],
       },
       key_control: {
@@ -168,7 +168,7 @@ const SCENES = [
           },
         ],
         bundles: [],
-        missing: [{ text: 'Any message signed with this key', effect: 'UNVERIFIED → SUPPORTED', tier: 1 }],
+        missing: [{ text: 'Any message signed with this key', effect: 'HOLD → ASSERT', tier: 1 }],
       },
     },
     graph: {
@@ -190,13 +190,14 @@ const SCENES = [
       { act: 'Ingested Market B vendor page', actor: 'system', hash: 'c27e5590', at: '2026-09-24 11:04' },
       { act: 'Copy-origin folding applied: 4 signals → 1 origin', actor: 'system', hash: 'a10f3d84', at: '2026-09-24 11:05' },
       { act: 'Verdict set: Persona Link = HOLD', actor: 'system', hash: 'ee204c19', at: '2026-09-24 11:05' },
+      { act: 'Verdict set: Key Control = HOLD', actor: 'system', at: '2026-09-24 11:05' },
     ],
     typical: { signals: 4, score: 94, label: 'identity confidence', merged: true },
   },
 
   /* ==================================================================
      SCENE 2 — GENUINE MIGRATION  →  ASSERT
-     Same signal count as scene 1. Different proof level. That is all.
+     Persona-bound signature and funds move establish control; writing alone does not.
      ================================================================== */
   {
     id: 'genuine',
@@ -204,8 +205,7 @@ const SCENES = [
     title: 'Genuine migration',
     question: 'A vendor leaves a market that exit-scammed. Is the new profile the same operator?',
     verdict: 'ASSERT',
-    caption:
-      'Three signals here, three in scene 1 — same count. The difference is the ladder: this one has a persona-bound signature and a live balance move, so it can reach ASSERT. Signal count is not proof level.',
+    caption: PRESENTER.find(p => p.scene === 'genuine').caption,
     case: { id: 'SA-26151-0002', opened: '2026-09-24 15:40', analyst: 'analyst.a' },
     subjects: [
       { handle: 'pale_horse', market: 'Market A', first: '2015-01-11', last: '2015-03-30' },
@@ -218,7 +218,7 @@ const SCENES = [
         falsify: 'A failed signature verification or evidence that the key was transferred.',
         evidence: [{
           kind: 'Signed message', title: 'January key signs the new persona-bound attestation',
-          detail: 'The signed body names pale_horse. and postdates the new profile.',
+          detail: 'The signed body names pale_horse. and is dated when the new profile appears.',
           status: 'verified', level: 'L2', cost: 4, origin: 'sig-2015-04-14',
           originLabel: 'Signed attestation, 2015-04-14', source: SRC.evolution, found: '2015-04-14',
         }],
@@ -233,7 +233,7 @@ const SCENES = [
         evidence: [
           {
             kind: 'Signed message', title: 'New profile signed by the January key; body names pale_horse.',
-            detail: 'The signature verifies, the signed body names the new handle, and the signed timestamp is after the new profile appears. This is persona-bound: it cannot be produced by copying a block from anywhere else.',
+            detail: 'The signature verifies, the signed body names the new handle, and the signed timestamp matches the new profile’s first recorded date. This is persona-bound: it cannot be produced by copying a block from anywhere else.',
             status: 'verified', level: 'L2', cost: 4, origin: 'sig-2015-04-14',
             originLabel: 'Signed attestation, 2015-04-14',
             source: SRC.evolution, found: '2015-04-14',
@@ -299,13 +299,15 @@ const SCENES = [
       { act: 'Signature verified against 2015-01 public key', actor: 'system', hash: '77c1a0f3', at: '2026-09-24 15:42' },
       { act: 'On-chain move confirmed, 1.482 BTC', actor: 'system', hash: '2de9114b', at: '2026-09-24 15:43' },
       { act: 'Verdict set: Persona Link = ASSERT (L3)', actor: 'system', hash: '0a7bb2c8', at: '2026-09-24 15:43' },
+      { act: 'Verdict set: Key Control = ASSERT', actor: 'system', at: '2026-09-24 15:43' },
+      { act: 'Verdict set: Wallet Control = ASSERT', actor: 'system', at: '2026-09-24 15:43' },
     ],
     typical: { signals: 3, score: 91, label: 'identity confidence', merged: true },
   },
 
   /* ==================================================================
-     SCENE 3 — REPLAYED SIGNATURE  →  CONTRADICTED
-     A signature that verifies and still proves nothing.
+     SCENE 3 — REPLAYED SIGNATURE  →  QUESTIONABLE / HOLD
+     Original block: 2016-01-05; new profile: 2016-02-11, 5 weeks later. Replay carries zero weight.
      ================================================================== */
   {
     id: 'replay',
@@ -313,8 +315,7 @@ const SCENES = [
     title: 'Replayed signature',
     question: 'The signature verifies. Does that mean the operator signed it?',
     verdict: 'HOLD',
-    caption:
-      'The signature verifies — it is a real signature. But it is byte-identical to a block published eleven months earlier, and its signed body names the old handle. A verification check alone passes this. Freshness does not.',
+    caption: PRESENTER.find(p => p.scene === 'replay').caption,
     case: { id: 'SA-26151-0003', opened: '2026-09-25 09:18', analyst: 'analyst.b' },
     subjects: [
       { handle: 'halcyon_vault', market: 'Market B', first: '2016-02-11', last: '2016-05-02' },
@@ -322,7 +323,7 @@ const SCENES = [
     ],
     claims: {
       key_control: {
-        status: 'CONTRADICTED', takeover: false, peak: 'L0',
+        status: 'QUESTIONABLE', takeover: false, peak: 'L0',
         summary:
           'The block on the new profile is byte-identical to a block published on the old profile in January. The signed body names the old handle and carries an old date. Nothing was signed for the new persona, so control of the new persona is not established.',
         falsify:
@@ -338,23 +339,23 @@ const SCENES = [
             source: SRC.darkforums, found: '2016-02-11',
           },
           {
-            kind: 'Byte comparison', title: 'Block is byte-identical to the January post',
+            kind: 'Byte comparison', title: 'Block is byte-identical to the post 5 weeks earlier',
             detail: 'Zero byte difference. A fresh attestation would differ — it would name the new handle and carry a current date.',
-            status: 'contradicted', level: 'L0', cost: 0, origin: 'sig-replay',
+            status: 'questionable', level: 'L0', cost: 0, origin: 'sig-replay',
             originLabel: 'Replayed block, Jan 2016',
             source: SRC.evolution, found: '2016-02-11',
           },
           {
-            kind: 'Timestamp', title: 'Signed date predates the new profile by 11 months',
+            kind: 'Timestamp', title: 'Original signed block: 5 weeks earlier',
             detail: 'The signed body was written before the profile it is claimed to attest to existed. It cannot attest to it.',
-            status: 'contradicted', level: 'L0', cost: 0, origin: 'sig-replay',
+            status: 'questionable', level: 'L0', cost: 0, origin: 'sig-replay',
             originLabel: 'Replayed block, Jan 2016',
             source: SRC.evolution, found: '2016-02-11',
           },
           {
             kind: 'Signed body', title: 'Signed body names the old handle, not the new one',
             detail: 'The only persona named inside the signature is halcyon.vault. Nothing binds halcyon_vault.',
-            status: 'contradicted', level: 'L0', cost: 0, origin: 'sig-replay',
+            status: 'questionable', level: 'L0', cost: 0, origin: 'sig-replay',
             originLabel: 'Replayed block, Jan 2016',
             source: SRC.darkforums, found: '2016-02-11',
           },
@@ -369,8 +370,8 @@ const SCENES = [
           },
         ],
         missing: [
-          { text: 'A signature whose signed body names halcyon_vault', effect: 'REJECT → SUPPORTED', tier: 1 },
-          { text: 'A signature dated after 2016-02-11', effect: 'REJECT → SUPPORTED', tier: 1 },
+          { text: 'A signature whose signed body names halcyon_vault', effect: 'HOLD → ASSERT', tier: 1 },
+          { text: 'A signature dated after 2016-02-11', effect: 'HOLD → ASSERT', tier: 1 },
         ],
       },
     },
@@ -382,14 +383,14 @@ const SCENES = [
       ],
       edges: [
         { from: 'a', to: 's', status: 'verified', label: 'original, Jan 2016' },
-        { from: 'b', to: 's', status: 'contradicted', label: 'byte-identical' },
+        { from: 'b', to: 's', status: 'questionable', label: 'byte-identical' },
       ],
     },
     ledger: [
       { act: 'Case opened', actor: 'analyst.b', hash: '15d0c7a2', at: '2026-09-25 09:18' },
       { act: 'Signature verified (crypto: pass)', actor: 'system', hash: '9a3f00be', at: '2026-09-25 09:19' },
-      { act: 'Replay detected: byte-identical block, 11 months old', actor: 'system', hash: 'fe81c204', at: '2026-09-25 09:19' },
-      { act: 'Verdict set: Key Control = REJECT', actor: 'system', hash: '6612ab7d', at: '2026-09-25 09:19' },
+      { act: 'Replay detected: original 2016-01-05, new profile 2016-02-11 — 5 weeks earlier', actor: 'system', hash: 'fe81c204', at: '2026-09-25 09:19' },
+      { act: 'Verdict set: Key Control = HOLD (replay, zero weight)', actor: 'system', hash: '6612ab7d', at: '2026-09-25 09:19' },
     ],
     typical: { signals: 1, score: 88, label: 'signature validity', merged: true },
   },
@@ -403,8 +404,7 @@ const SCENES = [
     title: 'Pasted vs signed wallet',
     question: 'An address appears in a forum post. Does that establish control of it?',
     verdict: 'HOLD',
-    caption:
-      'Step the ladder. The address is pasted first — five minutes of work for an attacker, no secret needed. Then a signed message declares it, and the cost to forge jumps to “requires the private key”. Watch the verdict move.',
+    caption: PRESENTER.find(p => p.scene === 'ladder').caption,
     case: { id: 'SA-26151-0004', opened: '2026-09-25 13:05', analyst: 'analyst.a' },
     subjects: [
       { handle: 'quillmark', market: 'Market C', first: '2016-03-02', last: '2016-07-19' },
@@ -448,7 +448,7 @@ const SCENES = [
         ],
         missing: [
           { text: 'A funds move from the declared address', effect: 'HOLD → ASSERT', tier: 1 },
-          { text: 'A second declaration naming the other handle', effect: 'strengthens SUPPORTED', tier: 2 },
+          { text: 'A second declaration naming the other handle', effect: 'HOLD → HOLD (strengthens SUPPORTED)', tier: 2 },
         ],
       },
     },
@@ -479,7 +479,7 @@ const SCENES = [
   },
 
   /* ==================================================================
-     SCENE 5 — TAKEOVER WITH CHANGE-POINT  →  violet HOLD
+     SCENE 5 — TAKEOVER WITH CHANGE-POINT  →  outlined amber HOLD
      ================================================================== */
   {
     id: 'takeover',
@@ -487,7 +487,7 @@ const SCENES = [
     title: 'Takeover with change-point',
     question: 'The key is the same. Is the person still the same?',
     verdict: 'HOLD',
-    caption: 'Key unchanged: key control holds. Behaviour changed: operator not confirmed.',
+    caption: PRESENTER.find(p => p.scene === 'takeover').caption,
     case: { id: 'SA-26151-0005', opened: '2026-09-25 17:50', analyst: 'analyst.b' },
     subjects: [{ handle: 'cinderbox', market: 'Market B', first: '2015-06-02', last: '2016-09-14' }],
     takeoverFlag: true,
@@ -497,7 +497,7 @@ const SCENES = [
         summary: 'The key is genuinely held. Three signed attestations across the period, all verifying.',
         falsify: 'Evidence of key compromise or a second signer.',
         evidence: [
-          { kind: 'Signed message', title: 'Attestations on 2015-06-02, 2016-02-28, 2016-08-18', detail: 'All three verify against the same key.', status: 'verified', level: 'L3', cost: 4, origin: 'key-cinderbox', originLabel: 'Signed attestations', source: SRC.evolution, found: '2016-08-18' },
+          { kind: 'Signed message', title: 'Attestations on 2015-06-02, 2016-02-28, 2016-08-18', observationDates: ['2015-06-02', '2016-02-28', '2016-08-18'], detail: 'All three verify against the same key.', status: 'verified', level: 'L3', cost: 4, origin: 'key-cinderbox', originLabel: 'Signed attestations', source: SRC.evolution, found: '2016-08-18' },
         ],
         bundles: [], missing: [],
       },
@@ -508,7 +508,7 @@ const SCENES = [
         falsify:
           'An out-of-band continuity signal: a phrase the two parties had agreed in advance, or a signed message from the original operator confirming or denying a transfer.',
         evidence: [
-          { kind: 'Listing behaviour', title: 'Curated, escrow-only → bulk, FE-only', detail: 'Inventory jumps from 6 items to 94. Escrow is dropped entirely after the change-point.', status: 'questionable', level: 'L1', cost: 3, origin: 'behav-before', originLabel: 'Behaviour: before change-point', source: SRC.evolution, found: '2016-04-02' },
+          { kind: 'Listing behaviour', title: 'Curated, escrow-only → bulk, FE-only', detail: 'Inventory jumps from 6 items to 94. Escrow is dropped entirely after the change-point.', status: 'questionable', level: 'L1', cost: 3, origin: 'behav-before', originLabel: 'Behaviour: before/after comparison', source: SRC.evolution, found: '2016-04-02' },
           { kind: 'Writing voice', title: 'British spelling, long posts → US spelling, terse', detail: 'Discrimination margin against the pre-change sample falls to 0.58, at the bottom of the unrelated-pair band.', status: 'questionable', level: 'L1', cost: 3, origin: 'behav-after', originLabel: 'Behaviour: after change-point', source: SRC.evolution, found: '2016-05-11' },
           { kind: 'Presence', title: 'Pre-change posting pattern stops entirely', detail: 'The 04:00–07:00 UTC window disappears on the same date.', status: 'questionable', level: 'L1', cost: 3, origin: 'behav-after', originLabel: 'Behaviour: after change-point', source: SRC.evolution, found: '2016-03-14' },
           { kind: 'Change-point', title: 'Behavioural change-point — 14 March', detail: 'Listing, writing and presence shift at the same point in the record.', status: 'questionable', level: 'L1', cost: 3, origin: 'behav-after', originLabel: 'Behavioural change-point', source: SRC.fixture, found: '2016-03-14' },
@@ -519,7 +519,7 @@ const SCENES = [
         missing: [
           { text: 'An out-of-band continuity signal agreed before the change', effect: 'HOLD → ASSERT', tier: 1 },
           { text: 'A signed message from the original operator confirming or denying transfer', effect: 'HOLD → ASSERT or REJECT', tier: 1 },
-          { text: 'A pre-change signed message using post-change register', effect: 'stays HOLD, weakens takeover flag', tier: 3 },
+          { text: 'A pre-change signed message using post-change register', effect: 'HOLD → HOLD (weakens takeover flag)', tier: 3 },
         ],
       },
     },
@@ -550,6 +550,7 @@ const SCENES = [
       { act: 'Change-point detected at 2016-03-14', actor: 'system', hash: '3c8bb590', at: '2026-09-25 17:52' },
       { act: 'Takeover flag raised: key valid, behaviour changed, operator not confirmed', actor: 'system', hash: 'dc4a0e21', at: '2026-09-25 17:52' },
       { act: 'Verdict set: Same Operator = HOLD', actor: 'system', hash: '1902fe6b', at: '2026-09-25 17:52' },
+      { act: 'Verdict set: Key Control = ASSERT', actor: 'system', at: '2026-09-25 17:52' },
     ],
     typical: { signals: 4, score: 89, label: 'identity confidence', merged: true },
   },
@@ -557,8 +558,8 @@ const SCENES = [
   /* ==================================================================
      SCENE 6 — CERT LEAK vs TEMPLATE FAVICON  →  VERIFIED / ASSERT
      A rare finding keeps its weight; a ubiquitous one cancels to zero.
-     The case reaches ASSERT on the rare finding alone, with the common
-     one shown and discounted rather than quietly dropped.
+     ASSERT rests on the certificate + server-status leak; common assets
+     are shown and discounted.
      ================================================================== */
   {
     id: 'hosting',
@@ -566,8 +567,7 @@ const SCENES = [
     title: 'Cert leak vs template favicon',
     question: 'Several infrastructure findings point at the same hidden service. Are they the same kind of evidence?',
     verdict: 'ASSERT',
-    caption:
-      'The certificate supports Hosting Link · ASSERT. The favicon is discounted — common asset on 2.3M hosts.',
+    caption: PRESENTER.find(p => p.scene === 'hosting').caption,
     case: { id: 'SA-26151-0006', opened: '2026-09-26 08:30', analyst: 'analyst.a' },
     subjects: [{ handle: 'vaultwright', market: 'Market A', first: '2016-01-04', last: '2016-12-19' }],
     category: ['hosting infrastructure', 'misconfiguration exposure'],
@@ -582,7 +582,7 @@ const SCENES = [
       hosting_link: {
         status: 'VERIFIED', takeover: false, peak: 'L2',
         summary:
-          'A certificate naming the service’s vanity substring was issued to a clearnet host, and the same certificate was observed on a candidate origin. Both findings require control of the certificate request, so both carry real cost to forge. Two findings on the same host, one of them rare, is what carries this claim to ASSERT.',
+          'A certificate naming the service’s vanity substring was issued to a clearnet host, and the same certificate was observed on a candidate origin. Both findings require control of the certificate request, so both carry real cost to forge. The certificate + server-status leak support Hosting Link · ASSERT; common assets are discounted.',
         falsify:
           'The certificate renewing to a different organisation, the candidate origin resolving to a shared hosting pool, or a second unrelated service presenting the identical certificate.',
         evidence: [
@@ -608,8 +608,8 @@ const SCENES = [
             source: SRC.fixture, found: '2016-11-02',
           },
           {
-            kind: 'Descriptor', title: 'Descriptor inconsistency against the relay family',
-            detail: 'The descriptor’s declared contact and the Onionoo family entry disagree. Inconsistency weakens any single identifier but does not contradict the certificate finding.',
+            kind: 'Descriptor', title: 'Descriptor inconsistency with service headers',
+            detail: 'The descriptor metadata and service headers disagree. Inconsistency weakens any single identifier but does not contradict the certificate finding.',
             status: 'questionable', level: 'L1', cost: 2, flags: ['context_only'], origin: 'descriptor-mismatch',
             originLabel: 'Descriptor metadata',
             source: SRC.onionoo, found: '2016-11-03',
@@ -682,7 +682,7 @@ const SCENES = [
     title: 'Sock-puppet vouch ring',
     question: 'Four accounts vouch for a vendor. Is that four corroborations?',
     verdict: 'HOLD',
-    caption: '5 graph nodes: vendor, three vouchers, shared key. Vouches discounted · trust weight 0.',
+    caption: PRESENTER.find(p => p.scene === 'ring').caption,
     case: { id: 'SA-26151-0007', opened: '2026-09-26 12:15', analyst: 'analyst.b' },
     subjects: [{ handle: 'sable_ledger', market: 'Market C', first: '2016-04-08', last: '2016-11-30' }],
     claims: {
@@ -734,6 +734,7 @@ const SCENES = [
       { act: 'Vouch ring folded: 3 vouchers + vendor → trust weight 0', actor: 'system', hash: 'b1f4a832', at: '2026-09-26 12:17' },
       { act: 'Shared key ID detected', actor: 'system', hash: '5ea90c47', at: '2026-09-26 12:17' },
       { act: 'Verdict set: Persona Link = REJECT', actor: 'system', hash: 'd28f3b60', at: '2026-09-26 12:17' },
+      { act: 'Verdict set: Key Control = REJECT', actor: 'system', at: '2026-09-26 12:17' },
     ],
     typical: { signals: 3, score: 86, label: 'corroboration strength', merged: true },
   },
@@ -748,8 +749,7 @@ const SCENES = [
     title: 'HOLD resolving to ASSERT',
     question: 'The case is stuck. What is missing, and what would fix it?',
     verdict: 'HOLD',
-    caption:
-      'A case that cannot move is a failure only if nobody can say why. The missing-evidence panel names the single item that would change the verdict, ranked, with the collection action attached.',
+    caption: PRESENTER.find(p => p.scene === 'resolve').caption,
     case: { id: 'SA-26151-0008', opened: '2026-09-26 16:02', analyst: 'analyst.a' },
     subjects: [
       { handle: 'tessellate', market: 'Market B', first: '2016-02-19', last: '2016-06-08' },
@@ -768,10 +768,10 @@ const SCENES = [
         ],
         bundles: [],
         missing: [
-          { text: 'A PGP-signed message naming tessellate_', effect: 'Persona Link + Key Control HOLD → ASSERT', tier: 1, collectible: true },
+          { text: 'A PGP-signed message naming tessellate_', effect: 'HOLD → ASSERT (Persona Link + Key Control)', tier: 1, collectible: true },
           { text: 'A wallet-control declaration from either handle', effect: 'HOLD → ASSERT', tier: 1, collectible: true },
-          { text: 'A counterparty who can attest to both handles off-platform', effect: 'strengthens SUPPORTED', tier: 2, collectible: false },
-          { text: 'A posting-cadence overlap measured across a full market year', effect: 'strengthens SUPPORTED', tier: 3, collectible: false },
+          { text: 'A counterparty who can attest to both handles off-platform', effect: 'HOLD → HOLD (strengthens SUPPORTED)', tier: 2, collectible: false },
+          { text: 'A posting-cadence overlap measured across a full market year', effect: 'HOLD → HOLD (strengthens SUPPORTED)', tier: 3, collectible: false },
         ],
       },
       key_control: {
@@ -783,7 +783,7 @@ const SCENES = [
           status: 'unverified', level: 'L0', cost: 0, origin: 'resolve-key-paste',
           originLabel: 'Published key block', source: SRC.fixture, found: '2016-07-02' }],
         bundles: [],
-        missing: [{ text: 'A PGP-signed message naming tessellate_', effect: 'Persona Link + Key Control HOLD → ASSERT', tier: 1, collectible: true }],
+        missing: [{ text: 'A PGP-signed message naming tessellate_', effect: 'HOLD → ASSERT (Persona Link + Key Control)', tier: 1, collectible: true }],
       },
     },
     graph: {
@@ -815,6 +815,7 @@ const SCENES = [
       { act: 'Case opened', actor: 'analyst.a', hash: '91c0bb73', at: '2026-09-26 16:02' },
       { act: 'Missing evidence ranked: 1 item would change verdict', actor: 'system', hash: '2a1fe904', at: '2026-09-26 16:05' },
       { act: 'Verdict set: Persona Link = HOLD', actor: 'system', hash: '6d30c8aa', at: '2026-09-26 16:05' },
+      { act: 'Verdict set: Key Control = HOLD', actor: 'system', at: '2026-09-26 16:05' },
     ],
     ledgerAfter: [
       { act: 'Collection job started: signed message', actor: 'analyst.a', hash: 'bf72d011', at: '2026-09-26 16:34' },

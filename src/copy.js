@@ -17,7 +17,7 @@ export const BOARD_COPY = {
   replay: 'Replayed signature carries zero proof.',
   ladder: 'Fresh wallet control resolves HOLD.',
   takeover: 'Key control holds; operator remains unconfirmed.',
-  hosting: 'Certificate links hosting; common assets discounted.',
+  hosting: 'Certificate + server-status leak support Hosting Link · ASSERT.',
   ring: '5 graph nodes; shared origin counts once.',
   resolve: 'Collect persona-bound proof to resolve HOLD.',
 };

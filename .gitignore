@@ -2,4 +2,22 @@ node_modules/
 dist/
 test-results/
 playwright-report/
+.deck-build/
 .npm-cache/
+
+# Raw source data and private key material stay local.
+data/raw/
+keys/
+secrets/
+.ssh/
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.asc
+*.gpg
+*.pgp
+id_rsa
+id_ed25519

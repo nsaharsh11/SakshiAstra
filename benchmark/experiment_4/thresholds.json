@@ -1,0 +1,162 @@
+{
+  "B0: Naive Key Match": {
+    "40%": {
+      "target_coverage": 0.4,
+      "threshold": 1.0,
+      "validation_realized_coverage": 1.0
+    },
+    "50%": {
+      "target_coverage": 0.5,
+      "threshold": 1.0,
+      "validation_realized_coverage": 1.0
+    },
+    "60%": {
+      "target_coverage": 0.6,
+      "threshold": 1.0,
+      "validation_realized_coverage": 1.0
+    },
+    "64%": {
+      "target_coverage": 0.64,
+      "threshold": 1.0,
+      "validation_realized_coverage": 1.0
+    },
+    "70%": {
+      "target_coverage": 0.7,
+      "threshold": 1.0,
+      "validation_realized_coverage": 1.0
+    },
+    "80%": {
+      "target_coverage": 0.8,
+      "threshold": 1.0,
+      "validation_realized_coverage": 1.0
+    }
+  },
+  "B5: Transformer Text Baseline": {
+    "40%": {
+      "target_coverage": 0.4,
+      "threshold": 0.9898899203604508,
+      "validation_realized_coverage": 0.4
+    },
+    "50%": {
+      "target_coverage": 0.5,
+      "threshold": 0.9820463082735171,
+      "validation_realized_coverage": 0.5
+    },
+    "60%": {
+      "target_coverage": 0.6,
+      "threshold": 0.981515051036176,
+      "validation_realized_coverage": 0.6
+    },
+    "64%": {
+      "target_coverage": 0.64,
+      "threshold": 0.9810637842974791,
+      "validation_realized_coverage": 0.64
+    },
+    "70%": {
+      "target_coverage": 0.7,
+      "threshold": 0.9639856219291687,
+      "validation_realized_coverage": 0.7
+    },
+    "80%": {
+      "target_coverage": 0.8,
+      "threshold": 0.9632755517959595,
+      "validation_realized_coverage": 0.8
+    }
+  },
+  "B4: Gradient Boosting Alone": {
+    "40%": {
+      "target_coverage": 0.4,
+      "threshold": 0.9999766903347487,
+      "validation_realized_coverage": 0.42
+    },
+    "50%": {
+      "target_coverage": 0.5,
+      "threshold": 0.9999766878275834,
+      "validation_realized_coverage": 0.5
+    },
+    "60%": {
+      "target_coverage": 0.6,
+      "threshold": 0.9999755805404684,
+      "validation_realized_coverage": 0.6
+    },
+    "64%": {
+      "target_coverage": 0.64,
+      "threshold": 0.9999747514716995,
+      "validation_realized_coverage": 0.68
+    },
+    "70%": {
+      "target_coverage": 0.7,
+      "threshold": 0.9999682374569603,
+      "validation_realized_coverage": 0.7
+    },
+    "80%": {
+      "target_coverage": 0.8,
+      "threshold": 0.999964440371237,
+      "validation_realized_coverage": 0.8
+    }
+  },
+  "B8: GradBoost + Grade Feature": {
+    "40%": {
+      "target_coverage": 0.4,
+      "threshold": 0.9999766895590363,
+      "validation_realized_coverage": 0.42
+    },
+    "50%": {
+      "target_coverage": 0.5,
+      "threshold": 0.9999766870494655,
+      "validation_realized_coverage": 0.5
+    },
+    "60%": {
+      "target_coverage": 0.6,
+      "threshold": 0.9999755805555035,
+      "validation_realized_coverage": 0.6
+    },
+    "64%": {
+      "target_coverage": 0.64,
+      "threshold": 0.9999747514515763,
+      "validation_realized_coverage": 0.68
+    },
+    "70%": {
+      "target_coverage": 0.7,
+      "threshold": 0.999968236891596,
+      "validation_realized_coverage": 0.7
+    },
+    "80%": {
+      "target_coverage": 0.8,
+      "threshold": 0.999964440248756,
+      "validation_realized_coverage": 0.8
+    }
+  },
+  "PRAMAAN: Claim-Specific Verification Gate": {
+    "40%": {
+      "target_coverage": 0.4,
+      "threshold": 0.95,
+      "validation_realized_coverage": 0.66
+    },
+    "50%": {
+      "target_coverage": 0.5,
+      "threshold": 0.95,
+      "validation_realized_coverage": 0.66
+    },
+    "60%": {
+      "target_coverage": 0.6,
+      "threshold": 0.95,
+      "validation_realized_coverage": 0.66
+    },
+    "64%": {
+      "target_coverage": 0.64,
+      "threshold": 0.95,
+      "validation_realized_coverage": 0.66
+    },
+    "70%": {
+      "target_coverage": 0.7,
+      "threshold": 0.45,
+      "validation_realized_coverage": 1.0
+    },
+    "80%": {
+      "target_coverage": 0.8,
+      "threshold": 0.45,
+      "validation_realized_coverage": 1.0
+    }
+  }
+}

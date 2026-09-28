@@ -2,6 +2,7 @@
   "name": "sakshiastra", "version": "0.1.0", "private": true, "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "prebuild": "node scripts/check_consistency.mjs",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "playwright test"
