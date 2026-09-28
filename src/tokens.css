@@ -1,0 +1,152 @@
+/* =====================================================================
+   SakshiAstra — theme tokens  (single source of truth)
+   ---------------------------------------------------------------------
+   Every colour and every type size in the product resolves to a token
+   declared here. No other file may contain a hex colour or a px font
+   size. Mirrored 1:1 in tailwind.config.js for teams on Tailwind.
+
+   Contract
+     · light everywhere — sidebar, top bar, provenance bar, cover
+     · colour appears only on verdict badges
+     · counters, statuses, ladder, rule boxes, cost meters are neutral
+     · no opacity below 100% on any title or body text
+     · root 16px; all sizes in rem
+     · Inter for UI; JetBrains Mono for IDs, hashes, fingerprints only
+   ===================================================================== */
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/inter.woff2') format('woff2');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../fonts/jetbrains-mono.woff2') format('woff2');
+  font-weight: 100 800; font-style: normal; font-display: swap;
+}
+
+:root {
+  /* ---------- surfaces ---------- */
+  --color-bg:            #F7F8FA;
+  --color-surface:       #FFFFFF;
+  --color-surface-alt:   #F1F5F9;   /* rule box, sunken panels */
+  --color-border:        #E3E6EB;
+  --color-border-strong: #CBD5E1;
+
+  /* ---------- text (no opacity used anywhere) ---------- */
+  --color-text:    #0F172A;
+  --color-text-2:  #475569;
+  --color-text-3:  #64748B;
+
+  /* ---------- accent ---------- */
+  --color-accent:        #1E3A8A;
+  --color-accent-hover:  #16306F;
+  --color-accent-tint:   #EEF2FA;
+  --color-accent-border: #C7D2E8;
+
+  /* ---------- verdicts — the only colour in the product ---------- */
+  --color-assert:    #15803D;  --color-assert-bg: #E7F4EC;  --color-assert-bd: #BFE0CC;
+  --color-hold:      #B45309;  --color-hold-bg:   #FBF0E2;  --color-hold-bd:   #EBD3B0;
+  --color-reject:    #B91C1C;  --color-reject-bg: #FBEBEB;  --color-reject-bd: #EEC7C7;
+  --color-takeover:  #B45309;   /* outlined badge, never filled */
+
+  /* ---------- graph / spine edges ---------- */
+  --edge-assert: #15803D;
+  --edge-hold:   #B45309;
+  --edge-reject: #B91C1C;
+
+  /* ---------- type ---------- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --text-body:    1rem;
+  --text-label:   0.8125rem;
+  --text-card:    1.25rem;
+  --text-page:    1.75rem;
+  --text-counter: 2.25rem;
+  --text-badge:   0.875rem;
+  --text-nav:     0.9375rem;
+  --text-cover:   3rem;
+  --text-lede:    1.125rem;
+  --text-sm:      0.875rem;
+  --text-xs:      0.8125rem;
+  --text-micro:   0.75rem;
+
+  --leading:       1.5;
+  --leading-tight: 1.25;
+  --track-label:   0.04em;
+
+  /* ---------- space (8px grid) ---------- */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-7: 32px; --space-8: 40px;
+  --pad-card: 24px;
+  --gap: 20px;
+
+  /* ---------- shell ---------- */
+  --shell-left:   264px;
+  --shell-right:  360px;
+  --shell-text:   1200px;   /* max-width for TEXT BLOCKS only */
+  --topbar-h:     64px;
+  --radius:       12px;
+  --radius-sm:    8px;
+  --radius-pill:  999px;
+
+  --shadow:    0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 2px 4px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 8px 28px rgba(15, 23, 42, 0.10);
+
+  --motion: 200ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---------- legacy aliases (kept so component class names keep working) ---------- */
+  --ch-0: var(--color-surface);  --ch-1: var(--color-surface);
+  --ch-2: var(--color-surface-alt); --ch-3: var(--color-accent-tint);
+  --ch-line: var(--color-border); --ch-line-soft: var(--color-border);
+  --ch-text: var(--color-text); --ch-text-2: var(--color-text-2); --ch-text-3: var(--color-text-3);
+
+  --pp-0: var(--color-surface); --pp-1: var(--color-surface); --pp-2: var(--color-surface-alt);
+  --pp-line: var(--color-border); --pp-line-strong: var(--color-border-strong);
+  --ink-1: var(--color-text); --ink-2: var(--color-text-2); --ink-3: var(--color-text-3);
+
+  --assert-ink: var(--color-assert); --assert-mark: var(--color-assert); --assert-wash: var(--color-assert-bg);
+  --hold-ink: var(--color-hold); --hold-mark: var(--color-hold); --hold-wash: var(--color-hold-bg);
+  --reject-ink: var(--color-reject); --reject-mark: var(--color-reject); --reject-wash: var(--color-reject-bg);
+  --takeover-ink: var(--color-takeover); --takeover-mark: var(--color-takeover);
+  --takeover-wash: var(--color-surface);
+  --null-ink: var(--color-text-2); --null-mark: var(--color-text-3); --null-wash: var(--color-surface-alt);
+
+  --f-sans: var(--font-sans); --f-mono: var(--font-mono); --f-display: var(--font-sans);
+  --t-hero: var(--text-cover); --t-title: var(--text-page); --t-h2: 1.5rem;
+  --t-h3: var(--text-card); --t-body: var(--text-body); --t-sm: var(--text-sm);
+  --t-xs: var(--text-xs); --t-micro: var(--text-micro);
+  --fs-body: var(--text-body); --fs-label: var(--text-label); --fs-card: var(--text-card);
+  --fs-page: var(--text-page); --fs-counter: var(--text-counter); --fs-badge: var(--text-badge);
+  --fs-nav: var(--text-nav); --fs-cover: var(--text-cover); --fs-sm: var(--text-sm);
+  --fs-xs: var(--text-xs); --fs-micro: var(--text-micro);
+
+  --lh: var(--leading); --lh-body: var(--leading); --lh-tight: var(--leading-tight); --lh-snug: var(--leading-tight);
+  --bg: var(--color-bg); --surface: var(--color-surface); --surface-sunk: var(--color-surface-alt);
+  --border: var(--color-border); --border-strong: var(--color-border-strong);
+  --text: var(--color-text); --text-2: var(--color-text-2); --text-3: var(--color-text-3);
+  --accent: var(--color-accent); --accent-hover: var(--color-accent-hover);
+  --accent-tint: var(--color-accent-tint); --accent-border: var(--color-accent-border);
+  --assert-fg: var(--color-assert); --assert-bg: var(--color-assert-bg); --assert-bd: var(--color-assert-bd);
+  --hold-fg: var(--color-hold); --hold-bg: var(--color-hold-bg); --hold-bd: var(--color-hold-bd);
+  --reject-fg: var(--color-reject); --reject-bg: var(--color-reject-bg); --reject-bd: var(--color-reject-bd);
+  --takeover-fg: var(--color-takeover);
+
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s7: 32px; --s8: 40px;
+  --radius-lg: var(--radius);
+  --maxw: var(--shell-text);
+  --rail-w: var(--shell-left);
+  --aside-w: var(--shell-right);
+  --hair: 1px;
+  --lift-1: var(--shadow); --lift-2: var(--shadow-md); --lift-3: var(--shadow-lg);
+  --m-fast: var(--motion); --m-base: var(--motion); --m-slow: var(--motion);
+  --ease-out: var(--ease);
+  --row-h: 36px; --chip-h: auto;
+  --track-tight: -0.01em;
+}
+
+html { font-size: 16px; }
+

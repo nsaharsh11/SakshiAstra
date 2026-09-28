@@ -1,0 +1,80 @@
+{
+  "dataset": "Agora 2014-15 (Kaggle), text only",
+  "listings": [
+    {
+      "row_id": "e13b3d7355",
+      "category": "drugs",
+      "title": "50 x 10mg Ambien / Stilnox / Zilnox(Zolpidem)",
+      "description": "Ambien (zolpidem) is a sedative also called a hypnotic. It affects [redacted] in your brain that may become unbalanced and cause sleep problems (insomnia). Ambien is used to treat insomnia. Th ...",
+      "supporting_terms": [
+        "zolpidem",
+        "sedative",
+        "insomnia"
+      ],
+      "source_level": "HISTORICAL",
+      "source": "Agora 2014-15 (Kaggle), text only"
+    },
+    {
+      "row_id": "90aec9e3f7",
+      "category": "arms",
+      "title": ".22lr ammo 500 rounds",
+      "description": "This listing is for a brick of .22lr ammunition. Full escrow for us buyers FE for international orders. 100% gurantee of delivery or 100% reship. [redacted] got in 15 boxes of 500 so get them while they la ...",
+      "supporting_terms": [
+        "ammo",
+        "ammunition",
+        "rounds"
+      ],
+      "source_level": "HISTORICAL",
+      "source": "Agora 2014-15 (Kaggle), text only"
+    },
+    {
+      "row_id": "4957352e55",
+      "category": "hacking",
+      "title": "P2P KEYLOGGER",
+      "description": "Function plug & play no needs to install software. Old style data stealer for CC info and accounts login. Entered automatically record the content of the victim keyboard. Extra stealth rea ...",
+      "supporting_terms": [
+        "keylogger",
+        "software",
+        "keyboard"
+      ],
+      "source_level": "HISTORICAL",
+      "source": "Agora 2014-15 (Kaggle), text only"
+    },
+    {
+      "row_id": "f548ce81ec",
+      "category": "laundering",
+      "title": "1 X 1oz Ounce Pamp Suisse Counterfeit [redacted] Bar in Assay Packaging",
+      "description": "This listing is for 1 X 1oz Pamp Suisse Counterfeit [redacted] [redacted] Bullion Bar. This bar comes in the plastic Assay Certificate Packaging and looks completely authentic. The serial number on the bac ...",
+      "supporting_terms": [
+        "counterfeit",
+        "bullion",
+        "assay"
+      ],
+      "source_level": "HISTORICAL",
+      "source": "Agora 2014-15 (Kaggle), text only"
+    },
+    {
+      "row_id": "9dcc989dce",
+      "category": "stolen_data",
+      "title": "Kaspersky PURE 3.0",
+      "description": "This listing is for a 100% working Kaspersky PURE 3.0 product key. I will offer a lifetime warranty on these accounts. For the ultimate PC security solution choose Kaspersky PURE 3.0 Total Securi ...",
+      "supporting_terms": [
+        "product key",
+        "accounts",
+        "warranty"
+      ],
+      "source_level": "HISTORICAL",
+      "source": "Agora 2014-15 (Kaggle), text only"
+    }
+  ],
+  "template": {
+    "group_id": "template_3",
+    "variants": [
+      "!!! PLEASE READ !!! Dear Costumer ***ALL ORDER's REQUIERE FE*** We currently building up our own Tor-Market ... please be so nice and checkout our marketplace here for a lower price: ht ...",
+      "!!! PLEASE READ !!! Dear Costumer ***ALL ORDER's REQUIERE FE*** We currently building up our own Tor-Market ... please be so nice and checkout our marketplace here for a lower price: ht ...",
+      "!!! PLEASE READ !!! Dear Costumer ***ALL ORDER's REQUIERE FE*** We currently building up our own Tor-Market ... please be so nice and checkout our marketplace here for a lower price: ht ..."
+    ],
+    "source_level": "HISTORICAL",
+    "source": "Agora 2014-15 (Kaggle), text only"
+  }
+}
