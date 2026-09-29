@@ -4,7 +4,7 @@ import React from 'react';
 import { CaseResult, ContinuityStrip, CopyOriginBundle, Icon, ProofLadder, WalletLadderStep, ProvenanceStrip, fmtStamp, SectionH, StatusWord, TakeoverFlag, VerdictChip } from './primitives.jsx';
 import { CLAIM_TYPES, RULES, SCENES } from './scenes.js';
 import { TweakButton, TweakRadio, TweakSection, TweakToggle, TweaksPanel, useTweaks } from './tweaks_panel.jsx';
-import { api } from './api.js';
+import { api, caseResult } from './api.js';
 import { Cover, RedTeam, RelationGraph } from './graph.jsx';
 import { ClaimBoard, Dossier, HoldQueue, IntakeStudio, MigrationTimeline } from './screens.jsx';
 import { ActorProfile, Collection, SuspectLadder } from './panels.jsx';
@@ -197,6 +197,7 @@ function App() {
      skip it on a warm reload so a refresh never loses your place */
   const [entered, setEntered] = React.useState(() => !!localStorage.getItem('sa.entered'));
   const [scene, setScene] = React.useState(null);
+  const [loadError, setLoadError] = React.useState(null);
   const [board, setBoard] = React.useState([]);
   const [ledger, setLedger] = React.useState([]);
   const [inspecting, setInspecting] = React.useState(null);
@@ -241,6 +242,7 @@ function App() {
 
   React.useEffect(() => {
     let live = true;
+    setLoadError(null);
     (async () => {
       const [s, b, l, q, p, col] = await Promise.all([
         api.getCase(sceneId), api.getClaimBoard(sceneId), api.getLedger(sceneId),
@@ -252,7 +254,9 @@ function App() {
       setProfile(p); setCollection(col);
       setRevealed(!!s.piiRevealed);
       setChainState({ ok: v.verified, reason: v.reason || null });
-    })();
+    })().catch(() => {
+      if (live) setLoadError('Could not load this case. Please try again.');
+    });
     return () => { live = false; };
   }, [sceneId, collected, reload]);
 
@@ -453,7 +457,7 @@ function App() {
                     <span style={{ flex: 1, whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
                       {s.title}
                     </span>
-                    <span className={`vchip v-${s.verdict.toLowerCase()}`}
+                    <span className={`vchip v-${(s.id === 'ring' ? caseResult(s).verdict : s.verdict).toLowerCase()}`}
                       style={{ padding: 0, border: 'none', background: 'none', height: 'auto' }}>
                       <span className="dot" />
                     </span>
@@ -476,7 +480,12 @@ function App() {
           {/* ---------------- main ---------------- */}
           <div className="main">
             <div className="main-scroll">
-              {!scene ? (
+              {loadError ? (
+                <div className="text-block">
+                  <p role="alert">{loadError}</p>
+                  <button className="btn btn-sm" onClick={() => setReload(n => n + 1)}>Try again</button>
+                </div>
+              ) : !scene ? (
                 <div className="text-block">
                   <div className="skel skel-title" />
                   <div className="skel skel-line" style={{ width: '72%' }} />
@@ -517,6 +526,12 @@ function App() {
                       onReset={async () => {
                         const result = await api.resetRedteam(sceneId);
                         if (!result.ok) return;
+                        setRevealed(false); setRevealRequested(false);
+                        setApprovals(prev => {
+                          const next = { ...prev };
+                          delete next[scene.case.id];
+                          return next;
+                        });
                         setCollected(new Set(result.collected)); setAttackStates({});
                         const [s, b, q, p, c] = await Promise.all([api.getCase(sceneId), api.getClaimBoard(sceneId), api.getQueue(), api.getActorProfile(sceneId), api.getCollection(sceneId)]);
                         setScene(s); setBoard(b); setQueue(q); setProfile(p); setCollection(c);

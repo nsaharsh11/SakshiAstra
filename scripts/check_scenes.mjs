@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { assertSceneConsistency } from './consistency.mjs';
 
 // The fixture/API modules expose their browser diagnostics on window.
 // Supply that surface for this deterministic Node check; no DOM is needed.
 globalThis.window = globalThis;
-const { api, evaluateClaim, replayEvidence, caseResult, weakestRoute } = await import('../src/api.js');
+const { api, store, evaluateClaim, replayEvidence, caseResult, weakestRoute } = await import('../src/api.js');
 const { SCENES, CLAIM_TYPES, RULES, PROOF_LEVELS } = await import('../src/scenes.js');
 const { BOARD_COPY } = await import('../src/copy.js');
 const { PRESENTER } = await import('../src/presenter.js');
@@ -33,6 +33,67 @@ async function check(name, run) {
   checks++;
   console.log(`PASS ${name}`);
 }
+
+await check('assets: fonts and docs images are real files; WOFF2 fonts have the wOF2 signature', async () => {
+  function inspect(directory) {
+    if (!existsSync(directory)) return;
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const path = new URL(entry.name + (entry.isDirectory() ? '/' : ''), directory);
+      if (entry.isDirectory()) { inspect(path); continue; }
+      const bytes = readFileSync(path);
+      assert.ok(!bytes.subarray(0, 64).toString('utf8').startsWith('version https://git-lfs'), `${path.pathname}: Git LFS pointer instead of asset`);
+      if (entry.name.endsWith('.woff2')) {
+        assert.equal(bytes.subarray(0, 4).toString('ascii'), 'wOF2', `${path.pathname}: invalid WOFF2 signature`);
+        assert.ok(bytes.length > 10000, `${path.pathname}: font must exceed 10 KB`);
+      }
+    }
+  }
+  inspect(new URL('../fonts/', import.meta.url));
+  inspect(new URL('../docs/img/', import.meta.url));
+});
+
+// Demo value locks: establish these before changing application code.
+await check('locked Scene 1: 4 signals, 1 origin; Boilerplate 88% → 24%; lookalike cost 0', async () => {
+  const scene = await api.getCase('lookalike'), claim = scene.claims.persona_link;
+  assert.equal(claim.bundles[0].items.length, 4);
+  assert.equal(claim.bundles.length, 1);
+  const copied = claim.evidence.filter(e => e.origin === claim.bundles[0].id);
+  assert.equal(new Set(copied.map(e => e.origin)).size, 1);
+  assert.match(claim.bundles[0].note, /4 signals, 1 origin/);
+  assert.deepEqual([claim.historicalLens.raw, claim.historicalLens.independent], [88, 24]);
+  assert.equal(claim.bundles[0].cost, 0);
+  assert.equal(weakestRoute(scene).cost, 0);
+});
+
+await check('locked Scene 5: Key Control ASSERT; Same Operator HOLD; change point 14 March', async () => {
+  const scene = await api.getCase('takeover');
+  assert.equal(scene.claims.key_control.claimVerdict, 'ASSERT');
+  assert.equal(scene.claims.same_operator.claimVerdict, 'HOLD');
+  assert.equal(scene.continuity.changeLabel, '2016-03-14');
+  assert.ok(scene.claims.same_operator.evidence.some(e => e.kind === 'Change-point' && e.found === '2016-03-14'));
+});
+
+await check('locked Scene 6: Hosting Link ASSERT; qualifying cost 4', async () => {
+  const scene = await api.getCase('hosting');
+  assert.equal(scene.claims.hosting_link.claimVerdict, 'ASSERT');
+  assert.equal(weakestRoute(scene).cost, 4);
+});
+
+await check('locked Scene 8: case and both claims HOLD → ASSERT; Persona L1 and Key L0 → L2', async () => {
+  const before = await api.getCase('resolve');
+  assert.equal(before.verdict, 'HOLD');
+  assert.deepEqual([before.claims.persona_link.claimVerdict, before.claims.persona_link.peak], ['HOLD', 'L1']);
+  assert.deepEqual([before.claims.key_control.claimVerdict, before.claims.key_control.peak], ['HOLD', 'L0']);
+  assert.deepEqual(before.resolveDemo.before, { verdict: 'HOLD', peak: 'L1', status: 'SUPPORTED' });
+  assert.deepEqual(before.resolveDemo.after, { verdict: 'ASSERT', peak: 'L2', status: 'VERIFIED' });
+  await api.collect('resolve', 'persona_link', 0);
+  const after = await api.getCase('resolve');
+  assert.equal(after.verdict, 'ASSERT');
+  for (const claim of Object.values(after.claims)) {
+    assert.deepEqual([claim.claimVerdict, claim.peak], ['ASSERT', 'L2']);
+  }
+  await api.resetRedteam('resolve');
+});
 
 await check('fixture consistency: status equals evaluator; ledger verdicts, missing effects, peaks, counts and dates agree', async () => {
   assertSceneConsistency(SCENES, evaluateClaim, CLAIM_TYPES, PRESENTER);
@@ -203,11 +264,49 @@ await check('hosting: Hosting Link · ASSERT; cert route cost 4; common asset di
   assert.match(evidence.find(e => e.kind === 'Favicon hash').discount, /2\.3M hosts/);
 });
 
-await check('ring: Vouches discounted · trust weight 0; narration matches 5 graph nodes', async () => {
+await check('wouldChangeTo: R2 stays HOLD; only tier-1 ASSERT routes advertise ASSERT', async () => {
+  const takeover = (await api.getClaimBoard('takeover')).find(c => c.id === 'same_operator');
+  assert.equal(takeover.verdict, 'HOLD');
+  assert.equal(takeover.wouldChangeTo, null);
+  assert.ok(takeover.missing.every(gap => !gap.effect.includes('ASSERT')));
+  assert.ok((await api.getCase('takeover')).claims.same_operator.missing.every(gap => !gap.effect.includes('ASSERT')));
+  const claim = store.scenes.find(s => s.id === 'resolve').claims.persona_link;
+  const missing = claim.missing;
+  try {
+    assert.equal((await api.getClaimBoard('resolve')).find(c => c.id === 'persona_link').wouldChangeTo, 'HOLD → ASSERT');
+    for (const tier of [2, 3]) {
+      claim.missing = missing.filter(gap => gap.tier === tier);
+      assert.equal((await api.getClaimBoard('resolve')).find(c => c.id === 'persona_link').wouldChangeTo, null);
+      claim.missing = [{ text: 'Higher-tier gap', effect: 'HOLD → ASSERT', tier }];
+      assert.equal((await api.getClaimBoard('resolve')).find(c => c.id === 'persona_link').wouldChangeTo, null);
+    }
+  } finally {
+    claim.missing = missing;
+  }
+});
+
+await check('R4 fresh-control explanation includes the replay zero-weight note without changing the result', async () => {
+  const claim = SCENES.find(s => s.id === 'ladder').claims.wallet_control;
+  const before = evaluateClaim(claim);
+  const after = evaluateClaim({ ...claim, evidence: [...claim.evidence, replayEvidence('2016-08-21')] });
+  assert.equal(after.rule, 'R4');
+  for (const field of ['verdict', 'status', 'peak', 'rule']) assert.equal(after[field], before[field]);
+  assert.ok(after.why.startsWith(before.why));
+  assert.match(after.why, /Replayed signatures and their artifact observations are excluded from proof weight/);
+});
+
+await check('ring: evaluated REJECT agrees with case result, board, queue and ledger; trust weight 0', async () => {
   const s = await api.getCase('ring');
   assert.equal(s.claims.persona_link.trustWeight, 0);
-  assert.equal(s.verdict, 'HOLD');
-  assert.equal(caseResult(s).label, 'Vouches discounted · trust weight 0');
+  assert.equal(s.verdict, 'REJECT');
+  assert.equal(caseResult(s).verdict, evaluateClaim(s.claims.persona_link).verdict);
+  assert.equal(caseResult(s).label, 'Persona Link · REJECT');
+  assert.equal(caseResult({ ...s, claims: { persona_link: { ...s.claims.persona_link, claimVerdict: 'HOLD' } } }).verdict, 'REJECT');
+  assert.equal((await api.getClaimBoard('ring')).find(c => c.id === 'persona_link').verdict, 'REJECT');
+  assert.ok(!(await api.getQueue()).find(q => q.scene === 'ring').holdClaims.includes('Persona Link'));
+  const ledger = await api.getLedger('ring');
+  assert.ok(ledger.some(row => row.act === 'Verdict set: Persona Link = REJECT'));
+  assert.ok(ledger.some(row => row.act === 'Result recorded: Persona Link · REJECT'));
   assert.equal(s.graph.nodes.length, 5);
   assert.ok(s.caption.startsWith(`${s.graph.nodes.length} graph nodes:`));
 });
@@ -393,6 +492,36 @@ await check('lookalike: caption, board, bundle and presenter all count the four 
     assert.ok(text.includes(caption));
     assert.equal(Number(text.match(/(\d+) signals/)[1]), bundle.items.length);
   }
+});
+
+await check('reset: clears later events, reveal and approvals for this case; reseeded ledger verifies', async () => {
+  await api.resetRedteam('ladder');
+  const baseline = (await api.getLedger('ladder')).slice(0, -1);
+  await api.revealPII('resolve', 'Preserve another case');
+  await api.approveExport('resolve', 'json');
+  const other = {
+    scene: await api.getCase('resolve'), ledger: await api.getLedger('resolve'),
+    approval: structuredClone(store.approvals['resolve:json']),
+  };
+  await api.collect('ladder', 'wallet_control', 0);
+  await api.redteam('ladder', 'replay-signature');
+  await api.revealPII('ladder', 'Demo reveal');
+  await api.approveExport('ladder', 'json');
+  await api.verifyLedger('ladder', 0);
+  assert.equal((await api.getCase('ladder')).piiRevealed, true);
+  assert.ok(store.approvals['ladder:json']);
+  await api.resetRedteam('ladder');
+  const scene = await api.getCase('ladder'), ledger = await api.getLedger('ladder');
+  assert.equal(scene.piiRevealed, false);
+  assert.equal(scene.claims.wallet_control.claimVerdict, 'HOLD');
+  assert.ok(!Object.keys(store.approvals).some(key => key.startsWith('ladder:')));
+  assert.deepEqual(ledger.slice(0, -1), baseline);
+  assert.equal(ledger.at(-1).act, 'Red-team attacks cleared; case re-derived');
+  assert.equal((await api.verifyLedger('ladder')).verified, true);
+  assert.deepEqual(await api.getCase('resolve'), other.scene);
+  assert.deepEqual(await api.getLedger('resolve'), other.ledger);
+  assert.deepEqual(store.approvals['resolve:json'], other.approval);
+  assert.ok((await api.collect('ladder', 'wallet_control', 0)).added);
 });
 
 console.log(`${checks}/${checks} checks passed.`);

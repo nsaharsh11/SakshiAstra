@@ -160,7 +160,7 @@ function evaluateClaim(claim) {
 
   if (claim.requiresFreshControl && !ev.some((e) => e.level === 'L3' && e.status === 'verified')) {
     return { status: 'SUPPORTED', verdict: 'HOLD', peak: peakLevel(ev), rule: 'R4', zero,
-      why: 'Wallet control is attested but not demonstrated. A fresh funds move is required before ASSERT.' };
+      why: 'Wallet control is attested but not demonstrated. A fresh funds move is required before ASSERT.' + zeroNote };
   }
 
   if (bound.length && !ev.some((e) => e.status === 'questionable')) {
@@ -182,12 +182,11 @@ function lvl(code) { return parseInt(String(code).replace('L', ''), 10) || 0; }
 function peakLevel(ev) { return ev.filter((e) => e.status !== 'contradicted').reduce((m, e) => (lvl(e.level) > lvl(m) ? e.level : m), 'L0'); }
 
 function caseResult(scene) {
-  if (scene.id === 'ring') return { verdict: 'HOLD', label: 'Vouches discounted · trust weight 0' };
   const primary = { lookalike: 'persona_link', genuine: 'key_control', replay: 'key_control',
     ladder: 'wallet_control', takeover: 'key_control', hosting: 'hosting_link', resolve: 'persona_link' };
   const claimId = primary[scene.id] || Object.keys(scene.claims)[0];
   const claim = scene.claims[claimId];
-  const verdict = claim.claimVerdict || evaluateClaim(claim).verdict;
+  const verdict = evaluateClaim(claim).verdict;
   const name = CLAIM_TYPES.find((ct) => ct.id === claimId).name;
   return { claimId, verdict, label: `${name} · ${verdict}` };
 }
@@ -349,7 +348,10 @@ const api = {
       Object.entries(out.claims).map(([k, c]) => {
         const folded = applyFolds(c, store.applied, scene.id, null);
         const ev = evaluateClaim(folded);
-        return [k, { ...folded, claimVerdict: ev.verdict, rule: ev.rule, why: ev.why, peak: ev.peak, status: ev.status, zeroWeight: ev.zero }];
+        const missing = ev.rule === 'R2'
+          ? (folded.missing || []).map(gap => ({ ...gap, effect: 'HOLD → HOLD (capped by R2)' }))
+          : folded.missing;
+        return [k, { ...folded, missing, claimVerdict: ev.verdict, rule: ev.rule, why: ev.why, peak: ev.peak, status: ev.status, zeroWeight: ev.zero }];
       }),
     );
     out.suspectLadder = suspectLadder(out);
@@ -357,6 +359,7 @@ const api = {
     if (scene.id === 'resolve') out.verdict = out.claims.persona_link.claimVerdict;
     if (scene.id === 'replay') out.verdict = out.claims.key_control.claimVerdict;
     if (scene.id === 'ladder') out.verdict = out.claims.wallet_control.claimVerdict;
+    if (scene.id === 'ring') out.verdict = caseResult(out).verdict;
     return out;
   },
 
@@ -385,7 +388,9 @@ const api = {
         missing,
         missingCount: missing.filter((m) => m.tier === 1).length,
         decisive: c ? c.why : 'No claim opened. The gap is that the question has not been examined.',
-        wouldChangeTo: verdict === 'HOLD' ? (c && c.missing && c.missing.length ? 'HOLD → ASSERT' : 'claim not opened') : null,
+        wouldChangeTo: verdict !== 'HOLD' || c?.rule === 'R2' ? null
+          : !c ? 'claim not opened'
+          : missing.some(gap => gap.tier === 1 && /→ ASSERT\b/.test(gap.effect)) ? 'HOLD → ASSERT' : null,
       };
     });
   },
@@ -555,6 +560,11 @@ const api = {
     Object.assign(scene, clone(initialScenes.get(sceneId)));
     for (const keys of [store.applied, store.collected]) {
       for (const key of keys) if (key.startsWith(`${sceneId}:`)) keys.delete(key);
+    }
+    delete store.events[sceneId];
+    store.revealed.delete(sceneId);
+    for (const key of Object.keys(store.approvals)) {
+      if (key.startsWith(`${sceneId}:`)) delete store.approvals[key];
     }
     if (sceneId) logEvent(sceneId, 'Red-team attacks cleared; case re-derived', 'analyst.a');
     return { ok: true, collected: [...store.collected] };

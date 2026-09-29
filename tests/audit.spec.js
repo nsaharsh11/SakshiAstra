@@ -94,7 +94,17 @@ test('decided claim badges, qualifying weakest routes, fixture labels and comple
   await expect(rules).toContainText('R6'); await expect(rules).toContainText('R8');
   await expect(rules.locator('.row')).toHaveCount(10);
   await pickScene(page, 6);
-  await expect(page.locator('.hero .vchip').first()).toHaveText('Vouches discounted · trust weight 0');
+  await expect(page.locator('.hero .vchip').first()).toHaveText('Persona Link · REJECT');
+  await expect(page.getByRole('button', { name: '7 Sock-puppet vouch ring', exact: true }).locator('.vchip')).toHaveClass(/v-reject/);
+  await expect(page.locator('.main .claim-card .vchip').first()).toHaveText('REJECT');
+  const ring = await page.evaluate(async () => ({
+    verdict: (await api.getCase('ring')).verdict,
+    holds: (await api.getQueue()).find(q => q.scene === 'ring').holdClaims,
+    acts: (await api.getLedger('ring')).map(row => row.act),
+  }));
+  expect(ring.verdict).toBe('REJECT');
+  expect(ring.holds).not.toContain('Persona Link');
+  expect(ring.acts).toContain('Result recorded: Persona Link · REJECT');
   await expect(page.locator('.hero-reason')).toContainText('5 graph nodes');
   for (const badge of await page.locator('.dbadge').allTextContents()) expect(badge).toBe('FIXTURE');
 });
@@ -104,6 +114,45 @@ test('compact counters label checked and waiting claims and include waiting HOLD
   await expect(page.locator('.claim-counters')).toContainText('5 claims · 2 checked · 3 waiting');
   expect(await page.locator('.claim-counters .vchip').allTextContents()).toEqual(['0 ASSERT', '5 HOLD', '0 REJECT']);
   await expect(page.locator('.stat-fig')).toHaveCount(0);
+});
+
+test('Same Operator gaps respect the R2 HOLD cap on screen and board', async ({ page }) => {
+  await enter(page);
+  await pickScene(page, 4);
+  await nav(page, 'Evidence inspector');
+  await page.getByRole('tab', { name: 'Same Operator', exact: true }).click();
+  await expect(page.locator('.main .sheet-head .vchip')).toHaveText('HOLD');
+  await page.locator('.main .evidence-fold > summary').click();
+  const effects = page.locator('.main .missing-effect');
+  expect(await effects.count()).toBeGreaterThan(0);
+  for (const effect of await effects.allTextContents()) {
+    expect(effect).toContain('HOLD → HOLD (capped by R2)');
+    expect(effect).not.toContain('ASSERT');
+  }
+  expect(await page.evaluate(async () => (await api.getClaimBoard('takeover')).find(c => c.id === 'same_operator').wouldChangeTo)).toBeNull();
+});
+
+test('case load failures show an error, end the skeleton and recover on retry', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await enter(page);
+  const methods = ['getCase', 'getClaimBoard', 'getLedger', 'getQueue', 'getActorProfile', 'getCollection', 'verifyLedger'];
+  for (const [i, method] of methods.entries()) {
+    await page.evaluate(method => {
+      window.restoreLoad = () => { api[method] = original; };
+      const original = api[method];
+      api[method] = async () => { throw new Error('Injected load failure'); };
+    }, method);
+    const index = i % 2 === 0 ? 1 : 0;
+    await page.getByRole('button', { name: `${index + 1} ${sceneNames[index]}`, exact: true }).click();
+    await expect(page.getByRole('alert')).toHaveText('Could not load this case. Please try again.');
+    await expect(page.locator('.main .skel')).toHaveCount(0);
+    await page.evaluate(() => window.restoreLoad());
+    await page.getByRole('button', { name: 'Try again', exact: true }).click();
+    await expect(page.locator('.case-name')).toContainText(sceneNames[index]);
+    await expect(page.getByRole('alert')).toHaveCount(0);
+  }
+  expect(errors).toEqual([]);
 });
 
 test('bundled Agora text is cited, mixed records show both badges, category stays separate and lens removes the template', async ({ page }) => {
@@ -405,9 +454,24 @@ test('case reset refreshes evidence and collection controls while preserving ano
   await page.locator('.main .evidence-fold > summary').click();
   await page.getByRole('button', { name: 'Add to collection' }).first().click();
   await expect(page.locator('.main .sheet-head .vchip')).toContainText('ASSERT');
+  await nav(page, 'Dossier & custody');
+  await page.getByRole('button', { name: 'Reveal PII', exact: true }).click();
+  await page.locator('.reason-prompt textarea').fill('Reveal before reset');
+  await page.getByRole('button', { name: 'Record reason and reveal', exact: true }).click();
+  await expect(page.locator('.pii.revealed')).toBeVisible();
   await nav(page, 'Red team');
   await page.getByRole('button', { name: /Reset/ }).click();
   await expect.poll(() => page.evaluate(async () => (await api.getCase('ladder')).claims.wallet_control.claimVerdict)).toBe('HOLD');
+  const reset = await page.evaluate(async () => ({
+    revealed: (await api.getCase('ladder')).piiRevealed,
+    acts: (await api.getLedger('ladder')).map(row => row.act),
+    verified: (await api.verifyLedger('ladder')).verified,
+  }));
+  expect(reset.revealed).toBe(false);
+  expect(reset.verified).toBe(true);
+  expect(reset.acts.join('\n')).not.toMatch(/Collection requested:|Evidence collected:|PII revealed/);
+  await nav(page, 'Dossier & custody');
+  await expect(page.locator('.pii.revealed')).toHaveCount(0);
   await nav(page, 'Evidence inspector');
   await page.getByRole('tab', { name: 'Wallet Control', exact: true }).click();
   await page.locator('.main .evidence-fold > summary').click();
