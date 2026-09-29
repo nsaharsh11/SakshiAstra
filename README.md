@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/img/banner.svg" width="1280" alt="SakshiAstra — Claim-by-claim dark-web attribution · SIH26151. AI suggests links. Only proof decides.">
+  <img src="docs/img/banner.svg" width="100%" alt="SakshiAstra — Claim-by-claim dark-web attribution · SIH26151. AI suggests links. Only proof decides.">
 </p>
 
 <p align="center">
@@ -13,12 +13,30 @@
 </p>
 
 <p align="center">
-  <a href="&lt;VERCEL_URL&gt;">Live demo</a> · <a href="&lt;YOUTUBE_URL&gt;">Video</a> · <a href="deliverables/README.md">Deck</a>
+  <a href="https://sakshiastra.vercel.app">Live demo</a> · <a href="&lt;YOUTUBE_URL&gt;">Video</a> · <a href="deliverables/SakshiAstra_final.pdf">Deck</a>
 </p>
 
 > [!NOTE]
-> The evidence is fixture data plus scrubbed Agora 2014–15 listing text. The verification, hashing, ledger and exports are computed live.
-> Verification here means rule evaluation over labelled evidence; PGP and wallet cryptographic checks and AI matchers are in development. The demo and video links are placeholders; the final deck PDF is awaiting addition.
+> Evidence is fixture data plus scrubbed Agora 2014–15 text. Rule evaluation, SHA-256 hashing, the custody ledger and exports run live in your browser.
+> PGP/wallet cryptographic checks and ML matchers are in development.
+
+## Try it in 60 seconds
+
+1. Open the [live demo](https://sakshiastra.vercel.app) and click **Enter the workbench**.
+2. In **Cases**, pick **1 · Lookalike vendor**: **4 signals, 1 origin**. Expand **Show evidence** on Persona Link, click **Open claim**, then expand **Show evidence** in the inspector. In **Boilerplate lens**, choose **Independent** to see **88% → 24%** once the shared template is removed.
+3. Pick **5 · Takeover with change-point**: **Key Control · ASSERT**, **Same Operator · HOLD**. Open **Migration timeline** to see the change-point at **14 March**.
+4. Pick **8 · HOLD resolving to ASSERT** and return to **Case workspace**. Open Persona Link with **Show evidence → Open claim**, expand **Show evidence**, then click **Add to collection** beside **A PGP-signed message naming tessellate_**. Persona Link and Key Control reach **L2 · ASSERT**. Open **Dossier & custody**, click **Tamper test**, then **Clear tamper test** to restore the chain and **STIX 2.1 bundle** to export.
+
+<table>
+  <tr>
+    <td width="50%"><a href="docs/img/01-board.png"><img src="docs/img/01-board.png" alt="Claim board: four signals, one origin, Persona Link HOLD"></a><br><strong>Claim board</strong><br>Prototype · fixture data</td>
+    <td width="50%"><a href="docs/img/02-boilerplate-lens.png"><img src="docs/img/02-boilerplate-lens.png" alt="Boilerplate Lens: 88% raw similarity becomes 24% after template removal"></a><br><strong>Boilerplate Lens</strong><br>Prototype · fixture data</td>
+  </tr>
+  <tr>
+    <td width="50%"><a href="docs/img/04-takeover-timeline.png"><img src="docs/img/04-takeover-timeline.png" alt="Takeover timeline with the 14 March change point"></a><br><strong>Key continuity and operator change</strong><br>Prototype · fixture data</td>
+    <td width="50%"><a href="docs/img/08-dossier-export.png"><img src="docs/img/08-dossier-export.png" alt="Dossier export with custody hashes and pending client-side approval"></a><br><strong>Dossier and custody</strong><br>Prototype · fixture data</td>
+  </tr>
+</table>
 
 ## Why this exists
 
@@ -30,7 +48,7 @@ Vendors can rebrand, copy another account's identifiers, or sell an account whil
 | Several matching signals | Shared origin counts once | Copying one template does not create independent corroboration. |
 | A valid key means the same operator | Same Operator stays on HOLD when behaviour changes | An account or key can change hands. |
 
-The comparison is an illustrative weighted-score model included in the prototype, not a measured claim about every attribution tool.
+Illustrative contrast, not a benchmark of specific tools.
 
 ## How it decides
 
@@ -39,7 +57,8 @@ flowchart LR
   Collect[Collect] --> Extract[Extract]
   Extract --> Suggest
   subgraph AI["AI suggests"]
-    Suggest["Suggest · planned matcher"]
+    Suggest["Suggest · Boilerplate Lens"]
+    Matchers["ML matchers · next"] -.-> Suggest
   end
   Suggest --> Verify
   subgraph Proof["Proof decides"]
@@ -49,8 +68,8 @@ flowchart LR
   Decide -.->|HOLD: collect missing proof| Collect
   classDef built fill:#1E3A8A,color:#FFFFFF,stroke:#1E3A8A
   classDef planned fill:#F1F5F9,color:#475569,stroke:#64748B,stroke-dasharray:5 5
-  class Collect,Extract,Verify,Decide,Dossier built
-  class Suggest planned
+  class Collect,Extract,Suggest,Verify,Decide,Dossier built
+  class Matchers planned
 ```
 
 Blue nodes run locally over fixture evidence and scrubbed text. AI matching and production collection are planned integrations; the prototype does not crawl live markets.
@@ -71,25 +90,14 @@ Enter the workbench and choose a numbered case in the sidebar, or use Presenter 
 
 | # | Attack | What the attacker does | What SakshiAstra decides | Rule |
 | --- | --- | --- | --- | --- |
-| 1 | Lookalike vendor | Copies a handle, key, wallet and listing template; cost to fake **0**. | **4 signals, 1 origin — counted once.** Persona Link stays HOLD; **88% → 24%** after template removal describes text, not identity. | R3, R6 |
+| 1 | Lookalike vendor | Copies a handle, key, wallet and listing template; cost to fake **0**. | **4 signals, 1 origin — counted once.** Persona Link stays HOLD. Boilerplate Lens: 88% → 24% once the shared template is removed. | R3, R6 |
 | 2 | Genuine migration | Positive control: supplies a persona-bound attestation. | **Persona-bound signature confirms key control.** Key Control · ASSERT. | R4 |
 | 3 | Replayed signature | Reposts an old signed block for the wrong persona. | **Replayed signature carries zero proof.** QUESTIONABLE, L0, cost 0, HOLD. | R8 |
 | 4 | Pasted vs signed wallet | Offers a wallet declaration without fresh control. | **Fresh wallet control resolves HOLD.** Collect the fresh challenge/funds move to reach L3 · ASSERT. | R4 |
 | 5 | Takeover with change-point | Keeps the key while behaviour changes at **14 March**. | **Key control holds; operator remains unconfirmed.** Key Control · ASSERT; Same Operator stays on HOLD. | R2 |
 | 6 | Cert leak vs template favicon | Shares common assets alongside an origin certificate and server-status leak. | **Certificate + server-status leak support Hosting Link · ASSERT.** The qualifying certificate route costs **4**; common assets carry zero proof. | R4, R10 |
 | 7 | Sock-puppet vouch ring | Uses three voucher accounts with a shared origin. | **5 graph nodes; shared origin counts once.** Vouches discounted · trust weight **0**; contradicted claims REJECT. | R1, R3 |
-| 8 | HOLD resolving to ASSERT | Positive control: collects the decisive persona-bound proof. | **Collect persona-bound proof to resolve HOLD.** Item 1 moves Persona Link and Key Control to ASSERT. | R4, R6 |
-
-<table>
-  <tr>
-    <td width="50%"><a href="docs/img/01-board.png"><img src="docs/img/01-board.png" alt="Claim board: four signals, one origin, Persona Link HOLD"></a><br><strong>Claim board</strong><br>Prototype · fixture data</td>
-    <td width="50%"><a href="docs/img/02-boilerplate-lens.png"><img src="docs/img/02-boilerplate-lens.png" alt="Boilerplate Lens: 88% raw similarity becomes 24% after template removal"></a><br><strong>Boilerplate Lens</strong><br>Prototype · fixture data</td>
-  </tr>
-  <tr>
-    <td width="50%"><a href="docs/img/04-takeover-timeline.png"><img src="docs/img/04-takeover-timeline.png" alt="Takeover timeline with the 14 March change point"></a><br><strong>Key continuity and operator change</strong><br>Prototype · fixture data</td>
-    <td width="50%"><a href="docs/img/08-dossier-export.png"><img src="docs/img/08-dossier-export.png" alt="Dossier export with custody hashes and pending client-side approval"></a><br><strong>Dossier and custody</strong><br>Prototype · fixture data</td>
-  </tr>
-</table>
+| 8 | HOLD resolving to ASSERT | Positive control: collects the decisive persona-bound proof. | **Collect persona-bound proof to resolve HOLD.** Item 1 moves Persona Link and Key Control to **L2 · persona-bound · ASSERT**. | R4, R6 |
 
 Additional views: [claim card](docs/img/03-claim-card.png), [vouch graph](docs/img/05-graph.png), [HOLD → ASSERT](docs/img/06-hold-to-assert.png), and [tamper test](docs/img/07-tamper-test.png). All show Prototype · fixture data.
 
@@ -140,7 +148,9 @@ R9 states the requirement for production evidence verification; the prototype co
 
 Session evidence and approval state survive navigation and reset on a full reload. Files can be downloaded before approval; the client marks them pending, so the prototype must not be treated as an enforced release system.
 
-## Quick start
+## For developers
+
+### Quick start
 
 Use Node.js 22.12+ or 20.19+ for the locked Vite version, and npm.
 
@@ -152,7 +162,7 @@ npm run preview
 
 Open the local URL printed by Vite. Both `/` and `/SakshiAstra.html` work; `npm run dev` starts the development server.
 
-## Tests
+### Tests
 
 ```sh
 node scripts/check_scenes.mjs
@@ -161,7 +171,7 @@ npm test
 
 **26/26 scene/data checks and 18/18 production browser tests pass.** Browser tests require installed Google Chrome and a completed build; they do not run during `npm run build`.
 
-## Benchmark
+### Benchmark
 
 ```sh
 python benchmark/verify.py
