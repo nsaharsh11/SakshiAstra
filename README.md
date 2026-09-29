@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Vite-build-1E3A8A?style=flat-square" alt="Vite">
   <img src="https://img.shields.io/badge/Tailwind-installed-1E3A8A?style=flat-square" alt="Tailwind installed">
   <img src="https://img.shields.io/badge/STIX-2.1-1E3A8A?style=flat-square" alt="STIX 2.1">
-  <img src="https://img.shields.io/badge/tests-26%2F26_%2B_18%2F18-15803D?style=flat-square" alt="26/26 scene checks + 18/18 browser tests">
+  <img src="https://img.shields.io/badge/tests-34%2F34_%2B_20%2F20-15803D?style=flat-square" alt="34/34 scene checks + 20/20 browser tests">
   <img src="https://img.shields.io/badge/licence-MIT-1E3A8A?style=flat-square" alt="MIT licence">
 </p>
 
@@ -169,7 +169,7 @@ node scripts/check_scenes.mjs
 npm test
 ```
 
-**26/26 scene/data checks and 18/18 production browser tests pass.** Browser tests require installed Google Chrome and a completed build; they do not run during `npm run build`.
+**34/34 scene/data checks and 20/20 production browser tests pass.** Browser tests require installed Google Chrome and a completed build; they do not run during `npm run build`.
 
 ### Benchmark
 
