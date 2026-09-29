@@ -1,11 +1,3 @@
-# Reviewed SIH presentation
-
-[SakshiAstra_reviewed.pptx](SakshiAstra_reviewed.pptx) updates the supplied six-slide SIH deck with white backgrounds and white content panels, blue headings, the original blue footer, and the template fonts. There is one `6@RootRevival` label on every slide. Text has been reflowed to avoid overlap and footer collisions.
-
-Slide 3 uses a clear left-to-right workflow: collection, evidence store, suggestions, per-claim verification, analyst review. All 20 original technology labels are retained. Recognizable original technology marks have medium-sized, proportional placements; technologies without established original marks retain text labels. Logo sources and the distinction between fixture components and planned integrations appear in speaker notes.
-
-Slide 4 replaces the `0 vs 30` and `67%` headline metrics with an editable five-attack comparison and a compressed challenge table. Style-tool responses are explicitly illustrative, not measured competitor results. Replay receives L0, zero weight and HOLD. Vouch-ring trust weight is 0. The log-edit row explains that SHA-256 detects an edited entry, while detecting a complete chain rewrite requires an independently trusted external anchor; such an anchor is not claimed built. The slide retains a real prototype screenshot, the IT Act / DPDP reference, and honest backend-development wording. Research benchmark code and artifacts remain separately available in [the benchmark documentation](../benchmark/README.md).
-
-Slide 5 cites the [Dutch prosecution service's Hansa takeover account](https://www.om.nl/actueel/nieuws/2017/07/20/ondergrondse-hansa-market-overgenomen-en-neergehaald). The public historical context is separate from the fixture illustration: one continuous Key Control / ASSERT track and a broken Same Operator / HOLD track, with `change point (fixture: 14 March)`. It does not claim SakshiAstra tested Hansa's keys or behaviour, or that physical infrastructure stayed unchanged.
-
-Validation for this presentation edit: six slides rendered and visually reviewed; five content-check groups passed; package integrity, source-font policy, native-table and import checks passed with zero geometry warnings. Editable tables and timeline tracks remain native PowerPoint objects. PowerPoint itself was unavailable for native application verification. App code, data and verdict logic were not changed in this round; prior app results were 26/26 scene checks, a successful production build and 18/18 browser tests.
+# Final SIH26151 presentation
+`SakshiAstra_final.pdf` is the final Team 6@RootRevival submission deck.
+The PDF is awaiting addition; it is not included in this checkout yet.
