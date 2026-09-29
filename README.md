@@ -51,6 +51,21 @@ examples. Historical text cites `Agora 2014-15 (Kaggle), text only`; mixed recor
 show both FIXTURE and HISTORICAL. Keys, wallets, signatures, timelines and attacks
 remain FIXTURE.
 
+## Verification rules
+
+| Rule | Description | Short summary |
+| --- | --- | --- |
+| R1 | Contradiction requires REJECT | Contradicted → REJECT |
+| R2 | Changed behaviour keeps Same Operator on HOLD | Takeover flag → HOLD |
+| R3 | Shared origin counts once | Copies count once |
+| R4 | Persona-bound proof required for ASSERT | No bound proof → no ASSERT |
+| R5 | Style alone can't prove. Max SUPPORTED | Style alone can't prove |
+| R6 | No independent proof binds this persona | No proof → HOLD |
+| R7 | Analyst confirms identity. Second analyst approves export | Human confirms, second approves |
+| R8 | Replay carries zero proof | Replay = zero proof |
+| R9 | Cryptographic checks required | Crypto checks required |
+| R10 | Common assets carry zero proof | Common assets = zero proof |
+
 ## Requirement → screen
 
 | Requirement | Screen |
