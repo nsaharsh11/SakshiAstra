@@ -1,3 +1,5 @@
+> Historical log. README.md is the authoritative description of the current build.
+
 # SakshiAstra audit — before changes
 
 The supplied folder is a React JSX prototype loaded by browser Babel. It has no package.json, TypeScript sources, installed project dependencies, or build command. The nested design handoff duplicates these sources.

@@ -1,3 +1,5 @@
+> Historical log. README.md is the authoritative description of the current build.
+
 # Text reduction — complete display-string change list
 
 Fixtures, scene order, evidence values, verdict/status vocabulary and evaluation logic are unchanged. Template rows apply to every matching instance. Removed repetitions are listed separately from relocated content.
