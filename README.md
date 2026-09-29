@@ -200,6 +200,14 @@ Raw data and the generated sample CSV are absent from this cleaned repository an
 
 Use only with authorisation, minimise personal data, and retain human sign-off for real-world attribution. Operational use must account for the IT Act 2000 and DPDP Act 2023; a fixture demonstration does not establish legal compliance.
 
+### Reproducing the data
+
+1. Download the Agora dataset from Kaggle under its applicable terms and place `Agora.csv` in `data/raw/`.
+2. With pandas installed locally, run `python scripts/agoras.py` to generate `data/agora_sample.csv` and `data/agora_templates.json`.
+3. Run `python scripts/bundle_agora.py` to regenerate the scrubbed `src/data/agora.json`.
+
+The raw file and sample CSV stay ignored. Regeneration is optional: neither script runs during build or tests, which use the committed JSON; regenerating locally can overwrite both JSON outputs.
+
 ## References
 
 - Tai, Soska & Christin (2019), *Adversarial Matching of Dark Net Market Vendor Accounts*, KDD. [DOI](https://doi.org/10.1145/3292500.3330763).

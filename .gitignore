@@ -21,3 +21,10 @@ secrets/
 *.pgp
 id_rsa
 id_ed25519
+
+data/agora_sample.csv
+.vercel/
+*.pptx
+*.log
+.DS_Store
+coverage/

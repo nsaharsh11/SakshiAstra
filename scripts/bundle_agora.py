@@ -1,3 +1,5 @@
+# Needs data/agora_sample.csv, created locally by agoras.py. It is not in the
+# repository. The committed src/data/agora.json is the scrubbed output.
 """Build a small, local, identifier-free text bundle from supplied files."""
 import csv
 import json

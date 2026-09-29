@@ -1,3 +1,5 @@
+# Regenerates data/agora_sample.csv from data/raw/Agora.csv. The raw file is not
+# distributed; download it from Kaggle (philipjames11, Agora 2014–15) into data/raw/.
 import pandas as pd, re, hashlib, json
 
 df = pd.read_csv("data/raw/Agora.csv", encoding="latin-1", on_bad_lines="skip")
